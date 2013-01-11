@@ -19,9 +19,19 @@
 
 namespace sizzLog
 {
+	void LogDebug( const std::string &msg );
+		
 	void LogInfo( const std::string &msg );
 	void LogWarning( const std::string &msg );
 	void LogError( const std::string &msg );
+}
+
+inline void sizzLog::LogDebug( const std::string &msg )
+{
+#ifndef NDEBUG
+	using namespace std;
+	cout << COUT_COLOUR(COLOUR_GREEN) << "Debug: " << msg << COUT_RESTORE_COLOUR << endl;
+#endif
 }
 
 inline void sizzLog::LogInfo( const std::string &msg )

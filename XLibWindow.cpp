@@ -9,6 +9,7 @@ CXLibWindow::CXLibWindow():
 	m_pDisplay(NULL),
 	m_iScreen(0),
 	m_Window(0),
+	m_pEventHandler(&m_NullEventHandler),
 	m_iWindowWidth(0),
 	m_iWindowHeight(0)
 {

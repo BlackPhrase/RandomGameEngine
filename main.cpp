@@ -48,17 +48,17 @@ void CGame::HandleEvent( const XEvent &event )
 	{
 		case Expose:
 			{
-				sizzLog::LogInfo( "received Expose event" );
+				sizzLog::LogDebug( "received Expose event" );
 			}
 			break;
 		case ButtonPress:
 			{
-				sizzLog::LogInfo( "received ButtonPress event" );
+				sizzLog::LogDebug( "received ButtonPress event" );
 			}
 			break;
 		case KeyPress:
 			{
-				sizzLog::LogInfo( "received KeyPress event" );
+				sizzLog::LogDebug( "received KeyPress event" );
 				m_bExit = true;
 			}
 			break;
