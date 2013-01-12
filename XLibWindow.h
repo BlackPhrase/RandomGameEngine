@@ -7,8 +7,6 @@
 
 #include <memory>
 
-#include "XLibGraphicsContext.h"
-
 class IXLibEventHandler
 {
 public:
@@ -18,6 +16,7 @@ public:
 
 class CNullEventHandler: public IXLibEventHandler
 {
+public:
 	virtual void HandleEvent(const XEvent &event) {}
 };
 
@@ -36,6 +35,9 @@ public:
 	
 	void ProcessEvents();
 	
+	Display *GetDisplay() const { return m_pDisplay; }
+	const Window &GetWindow() const { return m_Window; }
+	
 private:
 	static CNullEventHandler m_NullEventHandler;
 
@@ -48,8 +50,6 @@ private:
 	
 	int m_iWindowWidth;
 	int m_iWindowHeight;
-	
-	//std::unique_ptr<CXLibGraphicsContext> m_pGraphicsContext;
 };
 
 #endif // XLIB_WINDOW_H
