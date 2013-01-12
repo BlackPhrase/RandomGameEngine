@@ -58,15 +58,17 @@ void CGame::DisplaySplashScreen()
 	
 }
 
+#define FRAME_DELTA 1000.0/60.0
+
 void CGame::Frame()
 {
-	uint64_t time = sizzUtils::CurTimeMilli();
+	uint64_t time = sizzUtil::CurTimeMilli();
 	
-	static uint64_t oldtime = time;
+	static double oldtime = time;
 	
-	if ( time >= oldtime + 1000 )
+	if ( time >= oldtime + FRAME_DELTA )
 	{
-		sizzLog::LogInfo("tick");
+		sizzLog::LogDebug("% tick", time);
 		oldtime = time;
 	}
 }
