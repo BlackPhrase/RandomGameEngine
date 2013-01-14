@@ -2,7 +2,6 @@
 #ifndef SIZZ_LOGGER_H
 #define SIZZ_LOGGER_H
 
-#include <string>
 #include <sstream>
 #include <iostream>
 
@@ -24,10 +23,15 @@ namespace sizzLog
 {
 	template<typename... Args>
 	void LogDebug( const char *s, Args... args );
-
-	void LogInfo( const std::string &msg );
-	void LogWarning( const std::string &msg );
-	void LogError( const std::string &msg );
+	
+	template<typename... Args>
+	void LogInfo( const char *s, Args... args );
+	
+	template<typename... Args>
+	void LogWarning( const char *s, Args... args );
+	
+	template<typename... Args>
+	void LogError( const char *s, Args... args );
 }
 
 template<typename... Args>
@@ -41,22 +45,31 @@ inline void sizzLog::LogDebug( const char *s, Args... args )
 #endif
 }
 
-inline void sizzLog::LogInfo( const std::string &msg )
+template<typename... Args>
+inline void sizzLog::LogInfo( const char *s, Args... args )
 {
 	using namespace std;
-	cout << COUT_COLOUR(COLOUR_WHITE) << "Info: " << msg << COUT_RESTORE_COLOUR << endl;
+	stringstream ss;
+	sizzUtil::ssprintf(ss, s, args...);
+	cout << COUT_COLOUR(COLOUR_WHITE) << "Info: " << ss.rdbuf() << COUT_RESTORE_COLOUR << endl;
 }
 
-inline void sizzLog::LogWarning( const std::string &msg )
+template<typename... Args>
+inline void sizzLog::LogWarning( const char *s, Args... args )
 {
 	using namespace std;
-	cout << COUT_COLOUR(COLOUR_YELLOW) << "Warning: " << msg << COUT_RESTORE_COLOUR << endl;
+	stringstream ss;
+	sizzUtil::ssprintf(ss, s, args...);
+	cout << COUT_COLOUR(COLOUR_YELLOW) << "Warning: " << ss.rdbuf() << COUT_RESTORE_COLOUR << endl;
 }
 
-inline void sizzLog::LogError( const std::string &msg )
+template<typename... Args>
+inline void sizzLog::LogError( const char *s, Args... args )
 {
 	using namespace std;
-	cout << COUT_COLOUR(COLOUR_RED) << "Error: " << msg << COUT_RESTORE_COLOUR << endl;
+	stringstream ss;
+	sizzUtil::ssprintf(ss, s, args...);
+	cout << COUT_COLOUR(COLOUR_RED) << "Error: " << ss.rdbuf() << COUT_RESTORE_COLOUR << endl;
 }
 
 #endif // SIZZ_LOGGER_H

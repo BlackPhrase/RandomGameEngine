@@ -34,7 +34,7 @@ void CGame::Run()
 		
 		if ( time >= oldtime + FRAME_DELTA )
 		{
-			sizzLog::LogDebug("render %", time);
+			sizzLog::LogInfo("render %", time);
 			m_graphics.Render();
 			oldtime = time;
 		}
