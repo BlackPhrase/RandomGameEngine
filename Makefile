@@ -15,7 +15,7 @@ EXEC = a1
 ifeq "$(DEBUGBUILD)" "true"
 	DEBUG = -g -ggdb
 else
-	DEBUG = -DNDEBUG
+	DEBUG = -DNDEBUG -O3
 endif
 CXXFLAGS += $(DEBUG)
 

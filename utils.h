@@ -16,21 +16,8 @@ namespace sizzUtil
 	uint64_t CurTimeNano();
 	
 	template<typename T, typename... Args>
-	void ssprintf(std::stringstream &ss, const char* s, T value, Args... args);
-
-	namespace
-	{
-		void ssprintf(std::stringstream &ss, const char* s)
-		{
-			while (*s)
-			{
-				if (*s == '%' && *(++s) != '%')
-					throw std::runtime_error("invalid format string: missing arguments");
-				ss << *s++;
-			}
-		}
-	}
-	
+	void ssprintf(std::stringstream &ss, const char* s, const T &value, Args... args);
+	void ssprintf(std::stringstream &ss, const char* s);
 }
 
 inline uint64_t sizzUtil::RoundDBL( double num )
@@ -63,7 +50,7 @@ inline uint64_t sizzUtil::CurTimeNano()
 }
  
 template<typename T, typename... Args>
-inline void sizzUtil::ssprintf(std::stringstream &ss, const char* s, T value, Args... args)
+inline void sizzUtil::ssprintf(std::stringstream &ss, const char* s, const T &value, Args... args)
 {
     while (*s)
 	{
@@ -76,6 +63,16 @@ inline void sizzUtil::ssprintf(std::stringstream &ss, const char* s, T value, Ar
         ss << *s++;
     }
     throw std::logic_error("extra arguments provided to printf");
+}
+
+inline void sizzUtil::ssprintf(std::stringstream &ss, const char* s)
+{
+	while (*s)
+	{
+		if (*s == '%' && *(++s) != '%')
+			throw std::runtime_error("invalid format string: missing arguments");
+		ss << *s++;
+	}
 }
 
 #endif // UTILS_H

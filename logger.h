@@ -22,32 +22,22 @@
 
 namespace sizzLog
 {
-	template<typename T, typename... Args>
-	void LogDebug( const char *s, T value, Args... args );
-
-	void LogDebug( const std::string &msg );
+	template<typename... Args>
+	void LogDebug( const char *s, Args... args );
 
 	void LogInfo( const std::string &msg );
 	void LogWarning( const std::string &msg );
 	void LogError( const std::string &msg );
 }
 
-template<typename T, typename... Args>
-inline void sizzLog::LogDebug( const char *s, T value, Args... args )
+template<typename... Args>
+inline void sizzLog::LogDebug( const char *s, Args... args )
 {
 #ifndef NDEBUG
 	using namespace std;
 	stringstream ss;
-	sizzUtil::ssprintf(ss, s, value, args...);
+	sizzUtil::ssprintf(ss, s, args...);
 	cout << COUT_COLOUR(COLOUR_GREEN) << "Debug: " << ss.rdbuf() << COUT_RESTORE_COLOUR << endl;
-#endif
-}
-
-inline void sizzLog::LogDebug( const std::string &msg )
-{
-#ifndef NDEBUG
-	using namespace std;
-	cout << COUT_COLOUR(COLOUR_GREEN) << "Debug: " << msg << COUT_RESTORE_COLOUR << endl;
 #endif
 }
 
