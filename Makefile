@@ -1,4 +1,4 @@
-CXX = g++-4.4
+CXX = g++
 CXXFLAGS = -Wall -MMD -std=c++0x
 
 XLIB_INC = -L/usr/X11R6/lib
@@ -6,6 +6,7 @@ LDFLAGS = -lX11 -lrt
 
 OBJECTS = 	main.o \
 		XLibWindow.o \
+		XLibGraphics.o \
 		Game.o
 
 DEPENDS = ${OBJECTS:.o=.d}

@@ -6,8 +6,11 @@
 
 #include <sys/time.h>
 
-CGame::CGame(CXLibWindow &window):
+#define FRAME_DELTA 1000.0/120.0
+
+CGame::CGame(CXLibWindow &window, CXLibGraphics &graphics):
 	m_window(window),
+	m_graphics(graphics),
 	m_bExit(false)
 {
 	m_window.SetEventHandler(this);
@@ -25,6 +28,25 @@ void CGame::Run()
 		Frame();
 		
 		m_window.ProcessEvents();
+		
+		uint64_t time = sizzUtil::CurTimeMilli();
+		static double oldtime = time - FRAME_DELTA;
+		
+		if ( time >= oldtime + FRAME_DELTA )
+		{
+			sizzLog::LogDebug("render %", time);
+			m_graphics.Render();
+			oldtime = time;
+		}
+		else
+		{
+			double difference = oldtime+FRAME_DELTA - time;
+			int32_t nano_time = difference*1000000*0.98;
+			struct timespec sleep_time = {0, nano_time};
+			struct timespec temp = {0, 0};
+
+			nanosleep(&sleep_time, &temp);
+		}
 	}
 }
 
@@ -58,17 +80,7 @@ void CGame::DisplaySplashScreen()
 	
 }
 
-#define FRAME_DELTA 1000.0/60.0
-
 void CGame::Frame()
 {
-	uint64_t time = sizzUtil::CurTimeMilli();
-	
-	static double oldtime = time;
-	
-	if ( time >= oldtime + FRAME_DELTA )
-	{
-		sizzLog::LogDebug("% tick", time);
-		oldtime = time;
-	}
+
 }

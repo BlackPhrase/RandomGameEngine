@@ -3,11 +3,12 @@
 #define GAME_H
 
 #include "XLibWindow.h"
+#include "XLibGraphics.h"
 
 class CGame: public IXLibEventHandler
 {
 public:
-	CGame( CXLibWindow &window );
+	CGame( CXLibWindow &window, CXLibGraphics &graphics );
 	~CGame();
 	
 	void Run();
@@ -21,6 +22,7 @@ private:
 	
 private:
 	CXLibWindow &m_window;
+	CXLibGraphics &m_graphics;
 	bool m_bExit;
 };
 
