@@ -25,9 +25,9 @@ void CGame::Run()
 {
 	while (!m_bExit)
 	{
-		Frame();
-		
 		m_window.ProcessEvents();
+
+		Frame();
 		
 		uint64_t time = sizzUtil::CurTimeMilli();
 		static double oldtime = time - FRAME_DELTA;
