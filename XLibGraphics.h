@@ -6,12 +6,13 @@
 #include <stdint.h>
 #include <memory>
 
-class CXLibGraphics;
-
-class CDrawable
+class CGraphicsComponent
 {
 public:
-	virtual void Draw( const CXLibGraphics &device ) = 0;
+	CGraphicsComponent();
+	~CGraphicsComponent();
+	
+	Pixmap GetPixmap() const;
 	
 	void SetDepth( uint8_t depth ) { m_zdepth = depth; }
 	uint8_t GetDepth() const { return m_zdepth; }

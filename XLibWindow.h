@@ -38,6 +38,9 @@ public:
 	Display *GetDisplay() const { return m_pDisplay; }
 	const Window &GetWindow() const { return m_Window; }
 	
+	Pixmap CreatePixmap( float width, float height );
+	void FreePixmap( Pixmap pixmap );
+	
 private:
 	static CNullEventHandler m_NullEventHandler;
 

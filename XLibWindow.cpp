@@ -102,3 +102,13 @@ void CXLibWindow::ProcessEvents()
 		m_pEventHandler->HandleEvent(event);
 	}
 }
+
+Pixmap CXLibWindow::CreatePixmap( float width, float height )
+{
+	return XCreatePixmap(m_pDisplay, m_Window, width, height, DefaultDepth(m_pDisplay, m_Window));
+}
+
+void CXLibWindow::FreePixmap( Pixmap pixmap )
+{
+	XFreePixmap(m_pDisplay, pixmap);
+}
