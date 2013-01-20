@@ -6,6 +6,8 @@
 #include <stdint.h>
 #include <memory>
 
+#include <X11/Xlib.h>
+
 class CGraphicsComponent
 {
 public:
@@ -26,14 +28,14 @@ class CXLibGraphics
 	friend class CGame;
 public:
 	// add a drawable item to be rendered next frame
-	void EnqueueDrawable( const std::shared_ptr<CDrawable> &pDrawable );
+	//void EnqueueDrawable( const std::shared_ptr<CDrawable> &pDrawable );
 	
 protected:
 	// this function should be called once per frame by the game
 	void Render();
 	
 private:
-	std::priority_queue< std::shared_ptr<CDrawable> > m_displayList;
+	//std::priority_queue< std::shared_ptr<CDrawable> > m_displayList;
 };
 
 #endif // XLIB_GRAPHICS_H

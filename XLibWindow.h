@@ -5,8 +5,6 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
-#include <memory>
-
 class IXLibEventHandler
 {
 public:
@@ -40,6 +38,11 @@ public:
 	
 	Pixmap CreatePixmap( float width, float height );
 	void FreePixmap( Pixmap pixmap );
+	
+	int GetWindowWidth() const;
+	int GetWindowHeight() const;
+	
+	float GetAspectRatio() const;
 	
 private:
 	static CNullEventHandler m_NullEventHandler;

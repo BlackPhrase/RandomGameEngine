@@ -1,7 +1,9 @@
 
 #include "XLibWindow.h"
-#include "Game.h"
-#include "XLibGraphics.h"
+
+#include "Engine.h"
+#include "GameClient.h"
+#include "GameServer.h"
 
 int main( int argc, char *argv[] )
 {
@@ -9,12 +11,15 @@ int main( int argc, char *argv[] )
 	
 	if (window.OpenWindow(argc, argv))
 	{
-		CXLibGraphics graphics;
-		
-		CGame game(window, graphics);
+		CGameServer server;
+		CGameClient client;
 
-		game.Run();
+		CEngine engine(window, &server, &client);
 		
+		engine.Init();
+		engine.Run();
+		engine.Shutdown();
+
 		window.CloseWindow();
 	}
 }

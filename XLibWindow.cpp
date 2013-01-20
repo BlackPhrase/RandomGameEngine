@@ -46,13 +46,16 @@ bool CXLibWindow::OpenWindow( int argc, char *argv[] )
 	unsigned long white = XWhitePixel( m_pDisplay, m_iScreen );
 	unsigned long black = XBlackPixel( m_pDisplay, m_iScreen );
 	
+	m_iWindowWidth = 640;
+	m_iWindowHeight = 480;
+	
 	XSizeHints hints =
 	{
 		PPosition | PSize,
 		100,
 		100,
-		640,
-		480,
+		m_iWindowWidth,
+		m_iWindowHeight,
 	};
 	
 	m_Window = XCreateSimpleWindow(
@@ -111,4 +114,19 @@ Pixmap CXLibWindow::CreatePixmap( float width, float height )
 void CXLibWindow::FreePixmap( Pixmap pixmap )
 {
 	XFreePixmap(m_pDisplay, pixmap);
+}
+
+int CXLibWindow::GetWindowWidth() const
+{
+	return m_iWindowWidth;
+}
+
+int CXLibWindow::GetWindowHeight() const
+{
+	return m_iWindowHeight;
+}
+	
+float CXLibWindow::GetAspectRatio() const
+{
+	return static_cast<float>(m_iWindowWidth) / static_cast<float>(m_iWindowHeight);
 }

@@ -6,8 +6,9 @@ LDFLAGS = -lX11 -lrt
 
 OBJECTS = 	main.o \
 		XLibWindow.o \
-		XLibGraphics.o \
-		Game.o
+		Engine.o \
+		GameClient.o \
+		GameServer.o
 
 DEPENDS = ${OBJECTS:.o=.d}
 EXEC = a1

@@ -10,10 +10,10 @@
 namespace sizzUtil
 {
 	uint64_t RoundDBL( double num );
+	uint32_t RoundFlt( float num );
 	
-	uint32_t CurTimeSec();
-	uint64_t CurTimeMilli();
-	uint64_t CurTimeNano();
+	double CurTimeSec();
+	double CurTimeMilli();
 	
 	template<typename T, typename... Args>
 	void ssprintf(std::stringstream &ss, const char* s, const T &value, Args... args);
@@ -25,28 +25,27 @@ inline uint64_t sizzUtil::RoundDBL( double num )
 	return static_cast<uint64_t>(num + 0.5);
 }
 
-inline uint32_t sizzUtil::CurTimeSec()
+inline uint32_t sizzUtil::RoundFlt( float num )
 {
-	timespec t;
-	clock_gettime(CLOCK_REALTIME, &t);
-	
-	return t.tv_sec;
+	return static_cast<uint32_t>(num + 0.5);
 }
 
-inline uint64_t sizzUtil::CurTimeMilli()
+inline double sizzUtil::CurTimeSec()
 {
 	timespec t;
 	clock_gettime(CLOCK_REALTIME, &t);
 	
-	return t.tv_sec*1000 + t.tv_nsec / 1000000;
+	return static_cast<double>(t.tv_sec) + static_cast<double>(t.tv_nsec)/1000000000.0;
 }
 
-inline uint64_t sizzUtil::CurTimeNano()
+inline double sizzUtil::CurTimeMilli()
 {
 	timespec t;
 	clock_gettime(CLOCK_REALTIME, &t);
 	
-	return t.tv_sec*1000000000 + t.tv_nsec;
+	double cur_time = static_cast<double>(t.tv_sec)*1000.0 + static_cast<double>(t.tv_nsec)/1000000.0;
+	
+	return cur_time;
 }
  
 template<typename T, typename... Args>
