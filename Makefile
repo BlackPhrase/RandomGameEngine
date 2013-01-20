@@ -8,7 +8,8 @@ OBJECTS = 	main.o \
 		XLibWindow.o \
 		Engine.o \
 		GameClient.o \
-		GameServer.o
+		GameServer.o \
+		Graphics.o
 
 DEPENDS = ${OBJECTS:.o=.d}
 EXEC = a1

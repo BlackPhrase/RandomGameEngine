@@ -11,8 +11,6 @@
 
 #include "mathutil.h"
 
-#include <string>
-
 class CEntity;
 
 class CEngine: public IEngineClient, public IEngineServer, public IXLibEventHandler
@@ -29,8 +27,10 @@ public:
 private:
 	void		ClientFrame();
 
-public:
+	// ====================
 	// IXLibEventHandler interface
+	// ====================
+public:
 	virtual void HandleEvent( const XEvent &event );
 
 	// ====================
@@ -40,12 +40,7 @@ public:
 	virtual float		GetScreenAspectRatio() const;
 	virtual void		GetScreenSize( uint32_t &width, uint32_t &height ) const;
 
-	// converts the 0.0f-1.0f range of x,y to a point_t in terms of pixels on the screen
-	virtual void		NormalizedToScreenRes( float in_x, float in_y, point_t &out ) const;
-
 	virtual uint64_t	GetEngineTime() const;
-
-	virtual bool		SupportsDBX() const;
 
 	virtual void		ProcessWindowEvents() const;
 
@@ -53,7 +48,7 @@ public:
 	virtual uint32_t	GetFps() const;
 	virtual double		GetAverageFrameTime() const;
 	
-	virtual void		DrawText( float x, float y, const std::string &text ) const;
+	virtual void		SetPowerSaving( bool bEnable );
 
 	// ====================
 	// server interface
@@ -72,6 +67,7 @@ private:
 	
 	CAverageValueSampler m_FpsSampler;
 
+	bool		m_bPowerSaving;
 	bool		m_bQuit;
 };
 

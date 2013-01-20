@@ -36,6 +36,8 @@ public:
 	Display *GetDisplay() const { return m_pDisplay; }
 	const Window &GetWindow() const { return m_Window; }
 	
+	int32_t GetScreen() const { return m_iScreen; }
+	
 	Pixmap CreatePixmap( float width, float height );
 	void FreePixmap( Pixmap pixmap );
 	

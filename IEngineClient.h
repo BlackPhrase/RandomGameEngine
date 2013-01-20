@@ -3,7 +3,8 @@
 #define I_ENGINE_CLIENT_H
 
 #include "mathutil.h"
-#include <string>
+
+class CGraphicsEngine;
 
 //
 // this is the interface of the engine to the game client
@@ -13,21 +14,16 @@ class IEngineClient
 public:
 	virtual float		GetScreenAspectRatio() const = 0;
 	virtual void		GetScreenSize( uint32_t &width, uint32_t &height ) const = 0;
-	
-	// converts the 0.0f-1.0f range of x,y to a point_t in terms of pixels on the screen
-	virtual void		NormalizedToScreenRes( float in_x, float in_y, point_t &out ) const = 0;
-	
+
 	virtual uint64_t	GetEngineTime() const = 0;
-	
-	virtual bool		SupportsDBX() const = 0;
-	
+
 	virtual void		ProcessWindowEvents() const = 0;
-	
+
 	virtual void		SetFps( uint32_t desired_fps ) = 0;
 	virtual uint32_t	GetFps() const = 0;
 	virtual double		GetAverageFrameTime() const = 0;
 	
-	virtual void		DrawText( float x, float y, const std::string &text ) const = 0;
+	virtual void		SetPowerSaving( bool bEnable ) = 0;
 };
 
 //

@@ -9,6 +9,7 @@ CEngine::CEngine( CXLibWindow &window, IGameServer *pGameServer, IGameClient *pG
 	m_curTime(sizzUtil::CurTimeMilli()),
 	m_flNextClientFrameTime(0.0),
 	m_flDesiredFrameTime(1000.0/60.0),
+	m_bPowerSaving(false),
 	m_bQuit(false)
 {
 }
@@ -58,7 +59,7 @@ void CEngine::ClientFrame()
 		m_flNextClientFrameTime = cur_time + m_flDesiredFrameTime;
 		m_pClient->Frame();
 	}
-	else
+	else if (m_bPowerSaving)
 	{
 		double difference = m_flNextClientFrameTime - cur_time;
 		if (difference > 2.0)
@@ -113,21 +114,9 @@ void CEngine::GetScreenSize( uint32_t &width, uint32_t &height ) const
 	height = m_window.GetWindowHeight();
 }
 
-// converts the 0.0f-1.0f range of x,y to a point_t in terms of pixels on the screen
-void CEngine::NormalizedToScreenRes( float in_x, float in_y, point_t &out ) const
-{
-	out.m_x = sizzUtil::RoundFlt(in_x * (float)m_window.GetWindowWidth());
-	out.m_y = sizzUtil::RoundFlt(in_y * (float)m_window.GetWindowHeight());
-}
-
 uint64_t CEngine::GetEngineTime() const
 {
 	return m_curTime;
-}
-
-bool CEngine::SupportsDBX() const
-{
-	return false;
 }
 
 void CEngine::ProcessWindowEvents() const
@@ -149,8 +138,9 @@ double CEngine::GetAverageFrameTime() const
 	return m_flDesiredFrameTime + m_FpsSampler.GetAverage();
 }
 
-void CEngine::DrawText( float x, float y, const std::string &text ) const
+void CEngine::SetPowerSaving( bool bEnable )
 {
+	m_bPowerSaving = bEnable;
 }
 
 // ===================================================

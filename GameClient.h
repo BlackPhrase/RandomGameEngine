@@ -4,10 +4,12 @@
 
 #include "IEngineClient.h"
 
+class CGraphicsEngine;
+
 class CGameClient: public IGameClient
 {
 public:
-	CGameClient();
+	CGameClient( CGraphicsEngine *pGraphics );
 	~CGameClient();
 
 	virtual void	Init( IEngineClient *pEngine );
@@ -21,6 +23,7 @@ public:
 
 public:
 	IEngineClient *m_pEngine;
+	CGraphicsEngine *m_pGraphics;
 };
 
 #endif // GAME_CLIENT_H
