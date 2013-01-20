@@ -19,6 +19,9 @@ public:
 	
 	void		ClearWindow();
 	
+	void		BeginFrame();
+	void		EndFrame();
+	
 private:
 	// converts the 0.0f-1.0f range of x,y to a point_t in terms of pixels on the screen
 	void		NormalizedToScreenRes( float in_x, float in_y, point_t &out ) const;

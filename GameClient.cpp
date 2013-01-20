@@ -43,9 +43,16 @@ void CGameClient::Frame()
 	double fps = 1000.0 / avg_frame_time;
 	
 	std::stringstream ss;
-	sizzUtil::ssprintf(ss, "fps: % (%)", fps, avg_frame_time );
+	sizzUtil::ssprintf(ss, "fps: % (% ms)", fps, avg_frame_time );
 	
-	m_pGraphics->ClearWindow();
-	m_pGraphics->DrawText(0.0f, 0.02f, ss.str());
+	m_pGraphics->BeginFrame();
+	m_pGraphics->DrawText(0.0f, 0.0f, ss.str());
+	
+	ss.str("");
+	ss.clear();
+	sizzUtil::ssprintf(ss, "%", sizeof(XWindowAttributes));
+	m_pGraphics->DrawText(0.0f, 0.05f, ss.str());
+	
+	m_pGraphics->EndFrame();
 }
 	

@@ -79,7 +79,11 @@ void CEngine::HandleEvent( const XEvent &event )
 	{
 		case Expose:
 			{
-				sizzLog::LogDebug( "received Expose event" );
+				const XExposeEvent *pEvent = &event.xexpose;
+				
+				m_window.ResizeWindow(pEvent->width, pEvent->height);
+				
+				sizzLog::LogDebug( "received Expose event %", pEvent->count );
 			}
 			break;
 		case ButtonPress:

@@ -38,8 +38,19 @@ void CGraphicsEngine::ClearWindow()
 	XClearWindow( m_window.GetDisplay(), m_window.GetWindow() );
 }
 
+void CGraphicsEngine::BeginFrame()
+{
+	ClearWindow();
+}
+
+void CGraphicsEngine::EndFrame()
+{
+	XFlush(m_window.GetDisplay());
+}
+
 void CGraphicsEngine::NormalizedToScreenRes( float in_x, float in_y, point_t &out ) const
 {
+	// the height of the default text is 10 or 11 pixels
 	out.m_x = sizzUtil::RoundFlt(in_x * (float)m_window.GetWindowWidth());
-	out.m_y = sizzUtil::RoundFlt(in_y * (float)m_window.GetWindowHeight());
+	out.m_y = sizzUtil::RoundFlt(in_y * (float)m_window.GetWindowHeight() + 11);
 }

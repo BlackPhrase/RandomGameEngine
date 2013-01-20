@@ -90,8 +90,15 @@ void CXLibWindow::CloseWindow()
 
 void CXLibWindow::ResizeWindow( int width, int height )
 {
-	m_iWindowWidth = width;
-	m_iWindowHeight = height;
+	if ( m_iWindowWidth != width || m_iWindowHeight != height )
+	{
+		m_iWindowWidth = width;
+		m_iWindowHeight = height;
+		
+		XWindowAttributes asdf;
+		XGetWindowAttributes(m_pDisplay, m_Window, &asdf);
+		sizzLog::LogDebug("width: %, height %", asdf.width, asdf.height);
+	}
 }
 
 void CXLibWindow::ProcessEvents()

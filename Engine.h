@@ -47,7 +47,7 @@ public:
 	virtual void		SetFps( uint32_t desired_fps );
 	virtual uint32_t	GetFps() const;
 	virtual double		GetAverageFrameTime() const;
-	
+
 	virtual void		SetPowerSaving( bool bEnable );
 
 	// ====================
