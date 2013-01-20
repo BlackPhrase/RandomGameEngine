@@ -26,6 +26,7 @@ public:
 
 private:
 	void		ClientFrame();
+	void		ServerFrame();
 
 	// ====================
 	// IXLibEventHandler interface
@@ -40,7 +41,7 @@ public:
 	virtual float		GetScreenAspectRatio() const;
 	virtual void		GetScreenSize( uint32_t &width, uint32_t &height ) const;
 
-	virtual uint64_t	GetEngineTime() const;
+	virtual double		GetEngineTime() const;
 
 	virtual void		ProcessWindowEvents() const;
 
@@ -60,7 +61,9 @@ private:
 	IGameClient	*m_pClient;
 
 	// time of this frame
-	uint64_t	m_curTime;
+	double		m_flCurTime;
+	
+	double		m_flServerTimeAccumulator;
 
 	double		m_flNextClientFrameTime;
 	double		m_flDesiredFrameTime;

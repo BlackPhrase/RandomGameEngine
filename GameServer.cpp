@@ -1,8 +1,7 @@
 
 #include "GameServer.h"
 
-// for NULL
-#include <string.h>
+#include "logger.h"
 
 CGameServer::CGameServer():
 	m_pEngine(NULL)

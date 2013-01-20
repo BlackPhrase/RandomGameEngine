@@ -15,7 +15,7 @@ public:
 	virtual float		GetScreenAspectRatio() const = 0;
 	virtual void		GetScreenSize( uint32_t &width, uint32_t &height ) const = 0;
 
-	virtual uint64_t	GetEngineTime() const = 0;
+	virtual double		GetEngineTime() const = 0;
 
 	virtual void		ProcessWindowEvents() const = 0;
 

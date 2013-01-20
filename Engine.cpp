@@ -6,7 +6,8 @@ CEngine::CEngine( CXLibWindow &window, IGameServer *pGameServer, IGameClient *pG
 	m_window(window),
 	m_pServer(pGameServer),
 	m_pClient(pGameClient),
-	m_curTime(sizzUtil::CurTimeMilli()),
+	m_flCurTime(sizzUtil::CurTimeMilli()),
+	m_flServerTimeAccumulator(0.0),
 	m_flNextClientFrameTime(0.0),
 	m_flDesiredFrameTime(1000.0/60.0),
 	m_bPowerSaving(false),
@@ -38,11 +39,11 @@ void CEngine::Run()
 {
 	while (!m_bQuit)
 	{
-		m_curTime = sizzUtil::CurTimeMilli();
+		m_flCurTime = sizzUtil::CurTimeMilli();
 		
 		m_window.ProcessEvents();
-
-		m_pServer->GameFrame();
+		
+		ServerFrame();
 		
 		ClientFrame();
 	}
@@ -57,6 +58,7 @@ void CEngine::ClientFrame()
 		m_FpsSampler.TakeSample(cur_time - m_flNextClientFrameTime);
 		
 		m_flNextClientFrameTime = cur_time + m_flDesiredFrameTime;
+		
 		m_pClient->Frame();
 	}
 	else if (m_bPowerSaving)
@@ -71,6 +73,19 @@ void CEngine::ClientFrame()
 			nanosleep( &sleep_time, &temp );
 		}
 	}
+}
+
+void CEngine::ServerFrame()
+{
+	static const double SERVER_FRAME_DT = 1000.0 / 60.0;
+	/*
+	m_flServerTimeAccumulator += frame_time;
+	
+	while ( m_flServerTimeAccumulator >= SERVER_FRAME_DT )
+	{
+		m_pServer->GameFrame();
+		m_flServerTimeAccumulator -= SERVER_FRAME_DT;
+	}*/
 }
 
 void CEngine::HandleEvent( const XEvent &event )
@@ -118,9 +133,9 @@ void CEngine::GetScreenSize( uint32_t &width, uint32_t &height ) const
 	height = m_window.GetWindowHeight();
 }
 
-uint64_t CEngine::GetEngineTime() const
+double CEngine::GetEngineTime() const
 {
-	return m_curTime;
+	return m_flCurTime;
 }
 
 void CEngine::ProcessWindowEvents() const
