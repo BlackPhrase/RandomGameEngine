@@ -2,13 +2,20 @@
 #ifndef I_ENGINE_SERVER_H
 #define I_ENGINE_SERVER_H
 
+#include <stdint.h>
+
+class CEntity;
+
 //
 // this is the interface of the engine to the game server
 //
 class IEngineServer
 {
 public:
+	virtual uint32_t	CreateEntity() = 0;
+	virtual void		RemoveEntity( uint32_t index ) = 0;
 	
+	virtual bool		IsOnScreen( CEntity *pEntity ) = 0;
 };
 
 //

@@ -11,6 +11,9 @@
 
 #include "mathutil.h"
 
+#include <vector>
+#include <memory>
+
 class CEntity;
 
 class CEngine: public IEngineClient, public IEngineServer, public IXLibEventHandler
@@ -54,6 +57,11 @@ public:
 	// ====================
 	// server interface
 	// ====================
+public:
+	virtual uint32_t	CreateEntity();
+	virtual void		RemoveEntity( uint32_t index );
+	
+	virtual bool		IsOnScreen( CEntity *pEntity );
 
 private:
 	CXLibWindow	&m_window;
@@ -69,6 +77,8 @@ private:
 	double		m_flDesiredFrameTime;
 	
 	CAverageValueSampler m_FpsSampler;
+	
+	std::vector< std::shared_ptr<CEntity> > m_entityList;
 
 	bool		m_bPowerSaving;
 	bool		m_bQuit;

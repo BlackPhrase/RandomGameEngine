@@ -1,5 +1,7 @@
 
 #include "Engine.h"
+
+#include "Entity.h"
 #include "logger.h"
 
 CEngine::CEngine( CXLibWindow &window, IGameServer *pGameServer, IGameClient *pGameClient ):
@@ -166,4 +168,27 @@ void CEngine::SetPowerSaving( bool bEnable )
 // Server Interface
 // ===================================================
 
+uint32_t CEngine::CreateEntity()
+{
+	for ( uint32_t i = 0; i < m_entityList.size(); ++i )
+	{
+		CEntity *pEnt = m_entityList[i].get();
+		if (pEnt->IsMarkedForDeletion())
+		{
+			pEnt->Reset();
+		}
+		return i;
+	}
+	
+	m_entityList.emplace_back( new CEntity() );
+	return m_entityList.size() - 1;
+}
 
+void CEngine::RemoveEntity( uint32_t index )
+{
+	m_entityList[index]->MarkForDeletion();
+}
+	
+bool CEngine::IsOnScreen( CEntity *pEntity )
+{
+}

@@ -9,7 +9,8 @@ OBJECTS = 	main.o \
 		Engine.o \
 		GameClient.o \
 		GameServer.o \
-		Graphics.o
+		Graphics.o \
+		Entity.o
 
 DEPENDS = ${OBJECTS:.o=.d}
 EXEC = a1
