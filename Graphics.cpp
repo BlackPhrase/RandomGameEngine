@@ -28,9 +28,10 @@ bool CGraphicsEngine::SupportsDBX() const
 
 void CGraphicsEngine::DrawText( float x, float y, const std::string &text ) const
 {
-	point_t position = {0, 0};
+	uint_point_t position = {0, 0};
 	NormalizedToScreenRes(x, y, position);
-	XDrawImageString(m_window.GetDisplay(), m_window.GetWindow(), m_graphicsContext, position.m_x, position.m_y, text.c_str(), text.length());
+	// the height of the default text is 10 or 11 pixels
+	XDrawImageString(m_window.GetDisplay(), m_window.GetWindow(), m_graphicsContext, position.m_x, position.m_y + 11, text.c_str(), text.length());
 }
 
 void CGraphicsEngine::ClearWindow()
@@ -48,9 +49,8 @@ void CGraphicsEngine::EndFrame()
 	XFlush(m_window.GetDisplay());
 }
 
-void CGraphicsEngine::NormalizedToScreenRes( float in_x, float in_y, point_t &out ) const
+void CGraphicsEngine::NormalizedToScreenRes( float in_x, float in_y, uint_point_t &out ) const
 {
-	// the height of the default text is 10 or 11 pixels
 	out.m_x = sizzUtil::RoundFlt(in_x * (float)m_window.GetWindowWidth());
-	out.m_y = sizzUtil::RoundFlt(in_y * (float)m_window.GetWindowHeight() + 11);
+	out.m_y = sizzUtil::RoundFlt(in_y * (float)m_window.GetWindowHeight());
 }

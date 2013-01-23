@@ -5,11 +5,11 @@
 #include <stdint.h>
 #include <vector>
 
-typedef struct point_s
+typedef struct uint_point_s
 {
 	uint32_t m_x;
 	uint32_t m_y;
-} point_t;
+} uint_point_t;
 
 class CAverageValueSampler
 {
