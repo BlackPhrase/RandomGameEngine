@@ -2,16 +2,20 @@
 #include "Engine.h"
 
 #include "Entity.h"
+#include "Renderable.h"
+#include "Physics.h"
 #include "logger.h"
 
 CEngine::CEngine( CXLibWindow &window, IGameServer *pGameServer, IGameClient *pGameClient ):
 	m_window(window),
 	m_pServer(pGameServer),
 	m_pClient(pGameClient),
-	m_flCurTime(sizzUtil::CurTimeMilli()),
+	m_flCurTime(0.0),
+	m_flLastServerFrame(0.0),
 	m_flServerTimeAccumulator(0.0),
 	m_flNextClientFrameTime(0.0),
 	m_flDesiredFrameTime(1000.0/60.0),
+	m_nEntities(0),
 	m_bPowerSaving(false),
 	m_bQuit(false)
 {
@@ -34,21 +38,24 @@ void CEngine::Shutdown()
 	m_pClient->Shutdown();
 	m_pServer->Shutdown();
 	
+	for ( CEntity *pEnt : m_entityList )
+	{
+		delete pEnt;
+	}
+	
 	m_window.SetEventHandler(NULL);
 }
 
 void CEngine::Run()
 {
+	m_pServer->GameStart();
 	while (!m_bQuit)
 	{
-		m_flCurTime = sizzUtil::CurTimeMilli();
-		
 		m_window.ProcessEvents();
-		
-		ServerFrame();
 		
 		ClientFrame();
 	}
+	m_pServer->GameEnd();
 }
 
 void CEngine::ClientFrame()
@@ -61,6 +68,7 @@ void CEngine::ClientFrame()
 		
 		m_flNextClientFrameTime = cur_time + m_flDesiredFrameTime;
 		
+		ServerFrame();
 		m_pClient->Frame();
 	}
 	else if (m_bPowerSaving)
@@ -79,15 +87,24 @@ void CEngine::ClientFrame()
 
 void CEngine::ServerFrame()
 {
-	static const double SERVER_FRAME_DT = 1000.0 / 60.0;
-	/*
+	const double SERVER_FRAME_DT = 1.0 / 100.0;
+	
+	double time_now = sizzUtil::CurTimeSec();
+	double frame_time = time_now - m_flLastServerFrame;
+	if (frame_time > 0.250)
+	{
+		frame_time = 0.250;
+	}
+	m_flLastServerFrame = time_now;
+
 	m_flServerTimeAccumulator += frame_time;
 	
 	while ( m_flServerTimeAccumulator >= SERVER_FRAME_DT )
 	{
-		m_pServer->GameFrame();
+		m_pServer->GameFrame(SERVER_FRAME_DT);
+		m_flCurTime += SERVER_FRAME_DT;
 		m_flServerTimeAccumulator -= SERVER_FRAME_DT;
-	}*/
+	}
 }
 
 void CEngine::HandleEvent( const XEvent &event )
@@ -135,11 +152,6 @@ void CEngine::GetScreenSize( uint32_t &width, uint32_t &height ) const
 	height = m_window.GetWindowHeight();
 }
 
-double CEngine::GetEngineTime() const
-{
-	return m_flCurTime;
-}
-
 void CEngine::ProcessWindowEvents() const
 {
 }
@@ -164,31 +176,74 @@ void CEngine::SetPowerSaving( bool bEnable )
 	m_bPowerSaving = bEnable;
 }
 
+void CEngine::GetOnScreenRenderables( std::vector<renderableContext_t> &renderables ) const
+{
+	renderables.clear();
+	for ( CEntity *pEntity : m_entityList )
+	{
+		if (pEntity && pEntity->GetGraphicsComponent() && m_pServer->IsInViewBounds(pEntity))
+		{
+			renderableContext_t context = { Physics::GetPosition(pEntity), *pEntity->GetGraphicsComponent() };
+			renderables.emplace_back(context);
+		}
+	}
+}
+
 // ===================================================
 // Server Interface
 // ===================================================
 
-uint32_t CEngine::CreateEntity()
+uint32_t CEngine::CreateEntity( CEntity *pEntToInsert )
 {
-	for ( uint32_t i = 0; i < m_entityList.size(); ++i )
+	if (pEntToInsert)
 	{
-		CEntity *pEnt = m_entityList[i].get();
-		if (pEnt->IsMarkedForDeletion())
+		for ( uint32_t i = 0; i < m_entityList.size(); ++i )
 		{
-			pEnt->Reset();
+			CEntity *pEnt = m_entityList[i];
+			if (!pEnt)
+			{
+				pEnt = pEntToInsert;
+				++m_nEntities;
+				return i;
+			}
 		}
-		return i;
+		
+		m_entityList.emplace_back( pEntToInsert );
+		++m_nEntities;
+		return m_entityList.size() - 1;
 	}
-	
-	m_entityList.emplace_back( new CEntity() );
-	return m_entityList.size() - 1;
+	else
+	{
+		return 0xffff;
+	}
 }
 
 void CEngine::RemoveEntity( uint32_t index )
 {
-	m_entityList[index]->MarkForDeletion();
+	CEntity *pEnt = m_entityList[index];
+	if (pEnt)
+	{
+		delete pEnt;
+		pEnt = NULL;
+		--m_nEntities;
+	}
 }
-	
-bool CEngine::IsOnScreen( CEntity *pEntity )
+
+CEntity *CEngine::GetEntity( uint32_t index )
 {
+	if (index < m_entityList.size())
+	{
+		return m_entityList[index];
+	}
+	return NULL;
+}
+
+uint32_t CEngine::GetNumEntites() const
+{
+	return m_nEntities;
+}
+
+double CEngine::GetEngineTime() const
+{
+	return m_flCurTime;
 }

@@ -44,8 +44,6 @@ public:
 	virtual float		GetScreenAspectRatio() const;
 	virtual void		GetScreenSize( uint32_t &width, uint32_t &height ) const;
 
-	virtual double		GetEngineTime() const;
-
 	virtual void		ProcessWindowEvents() const;
 
 	virtual void		SetFps( uint32_t desired_fps );
@@ -53,15 +51,19 @@ public:
 	virtual double		GetAverageFrameTime() const;
 
 	virtual void		SetPowerSaving( bool bEnable );
+	
+	virtual void		GetOnScreenRenderables( std::vector<renderableContext_t> &renderables ) const;
 
 	// ====================
 	// server interface
 	// ====================
 public:
-	virtual uint32_t	CreateEntity();
+	virtual uint32_t	CreateEntity( CEntity *pEntToInsert );
 	virtual void		RemoveEntity( uint32_t index );
+	virtual CEntity		*GetEntity( uint32_t index );
+	virtual uint32_t	GetNumEntites() const;
 	
-	virtual bool		IsOnScreen( CEntity *pEntity );
+	virtual double		GetEngineTime() const;
 
 private:
 	CXLibWindow	&m_window;
@@ -70,7 +72,7 @@ private:
 
 	// time of this frame
 	double		m_flCurTime;
-	
+	double		m_flLastServerFrame;
 	double		m_flServerTimeAccumulator;
 
 	double		m_flNextClientFrameTime;
@@ -78,7 +80,8 @@ private:
 	
 	CAverageValueSampler m_FpsSampler;
 	
-	std::vector< std::shared_ptr<CEntity> > m_entityList;
+	std::vector<CEntity*> m_entityList;
+	uint32_t	m_nEntities;
 
 	bool		m_bPowerSaving;
 	bool		m_bQuit;

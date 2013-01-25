@@ -1,7 +1,7 @@
 
 #include "GameClient.h"
 #include "Graphics.h"
-
+#include "Renderable.h"
 #include "logger.h"
 
 // for NULL
@@ -39,19 +39,21 @@ bool CGameClient::KeyEvent()
 // called by the engine when the next frame should be run on the client
 void CGameClient::Frame()
 {
-	double avg_frame_time = m_pEngine->GetAverageFrameTime();
-	double fps = 1000.0 / avg_frame_time;
-	
-	std::stringstream ss;
-	sizzUtil::ssprintf(ss, "fps: % (% ms)", fps, avg_frame_time );
-	
 	m_pGraphics->BeginFrame();
-	m_pGraphics->DrawText(0.0f, 0.0f, ss.str());
 	
-	ss.str("");
-	ss.clear();
-	sizzUtil::ssprintf(ss, "%", sizeof(XWindowAttributes));
-	m_pGraphics->DrawText(0.0f, 0.05f, ss.str());
+	{
+		std::shared_ptr< std::vector<renderableContext_t> > pRenderables(new std::vector<renderableContext_t>());
+		m_pEngine->GetOnScreenRenderables(*pRenderables);
+		m_pGraphics->QueueRenderables(pRenderables);
+	}
+	{
+		double avg_frame_time = m_pEngine->GetAverageFrameTime();
+		double fps = 1000.0 / avg_frame_time;
+		
+		std::stringstream ss;
+		sizzUtil::ssprintf(ss, "fps: % (% ms)", fps, avg_frame_time );
+		m_pGraphics->DrawText(0.0f, 0.0f, ss.str());
+	}
 	
 	m_pGraphics->EndFrame();
 }

@@ -5,6 +5,9 @@
 #include "mathutil.h"
 
 class CGraphicsEngine;
+class CEntity;
+struct renderableContext_s;
+typedef struct renderableContext_s renderableContext_t;
 
 //
 // this is the interface of the engine to the game client
@@ -15,8 +18,6 @@ public:
 	virtual float		GetScreenAspectRatio() const = 0;
 	virtual void		GetScreenSize( uint32_t &width, uint32_t &height ) const = 0;
 
-	virtual double		GetEngineTime() const = 0;
-
 	virtual void		ProcessWindowEvents() const = 0;
 
 	virtual void		SetFps( uint32_t desired_fps ) = 0;
@@ -24,6 +25,8 @@ public:
 	virtual double		GetAverageFrameTime() const = 0;
 	
 	virtual void		SetPowerSaving( bool bEnable ) = 0;
+	
+	virtual void		GetOnScreenRenderables( std::vector<renderableContext_t> &renderables ) const = 0;
 };
 
 //

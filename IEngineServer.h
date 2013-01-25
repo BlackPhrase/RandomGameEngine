@@ -12,10 +12,12 @@ class CEntity;
 class IEngineServer
 {
 public:
-	virtual uint32_t	CreateEntity() = 0;
+	virtual uint32_t	CreateEntity( CEntity *pEntToInsert ) = 0;
 	virtual void		RemoveEntity( uint32_t index ) = 0;
-	
-	virtual bool		IsOnScreen( CEntity *pEntity ) = 0;
+	virtual CEntity		*GetEntity( uint32_t index ) = 0;
+	virtual uint32_t	GetNumEntites() const = 0;
+
+	virtual double		GetEngineTime() const = 0;
 };
 
 //
@@ -31,7 +33,9 @@ public:
 	virtual void	GameEnd() = 0;
 
 	// called each frame by the engine
-	virtual void	GameFrame() = 0;
+	virtual void	GameFrame( double dt ) = 0;
+	
+	virtual bool	IsInViewBounds( CEntity *pEntity ) = 0;
 };
 
 #endif // I_ENGINE_SERVER_H
