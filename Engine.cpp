@@ -7,6 +7,8 @@
 #include "GameEnts.h"
 #include "logger.h"
 
+#include <X11/keysymdef.h>
+
 CEngine::CEngine( CXLibWindow &window, IGameServer *pGameServer, IGameClient *pGameClient ):
 	m_window(window),
 	m_pServer(pGameServer),
@@ -30,6 +32,7 @@ CEngine::~CEngine()
 void CEngine::Init()
 {
 	m_window.SetEventHandler(this);
+	m_window.SetAutoRepeat(false);
 	
 	m_entViewBounds = m_pServer->Init(this);
 	m_pClient->Init(this);
@@ -45,6 +48,7 @@ void CEngine::Shutdown()
 		delete pEnt;
 	}
 	
+	m_window.SetAutoRepeat(true);
 	m_window.SetEventHandler(NULL);
 }
 
@@ -109,8 +113,11 @@ void CEngine::ServerFrame()
 	}
 }
 
-void CEngine::HandleEvent( const XEvent &event )
+void CEngine::HandleEvent( const XEvent &event, bool bQuit )
 {
+	if (bQuit)
+		m_bQuit = true;
+	
 	switch (event.type)
 	{
 		case Expose:
@@ -129,8 +136,19 @@ void CEngine::HandleEvent( const XEvent &event )
 			break;
 		case KeyPress:
 			{
-				sizzLog::LogDebug( "received KeyPress event" );
-				m_pClient->KeyEvent();
+				//sizzLog::LogDebug( "received KeyPress event" );
+				KeySym key = m_window.GetKey(event.xkey);
+				sizzLog::LogDebug("press %", XKeysymToString(key));
+				m_pClient->KeyEvent(key, true);
+				//m_bQuit = true;
+			}
+			break;
+		case KeyRelease:
+			{
+				//sizzLog::LogDebug( "received KeyRelease event" );
+				KeySym key = m_window.GetKey(event.xkey);
+				sizzLog::LogDebug("release %", XKeysymToString(key));
+				m_pClient->KeyEvent(key, false);
 				//m_bQuit = true;
 			}
 			break;
@@ -208,6 +226,11 @@ point_3d_t CEngine::GameToScreenCoords( const point_3d_t &gameCoords ) const
 	out.m_y *= (m_window.GetWindowHeight() / fov.m_y);
 	
 	return out;
+}
+
+void CEngine::ServerCommand( const std::string &command )
+{
+	//m_pServer
 }
 
 // ===================================================

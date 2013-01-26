@@ -76,8 +76,12 @@ bool CXLibWindow::OpenWindow( int argc, char *argv[] )
 		argv, argc,
 		&hints );
 		
-	XSelectInput(m_pDisplay, m_Window, ButtonPressMask | KeyPressMask | ExposureMask);
-		
+	XSelectInput(m_pDisplay, m_Window, ButtonPressMask | KeyPressMask | KeyReleaseMask | ExposureMask);
+	
+	// register interest in the delete window message
+	m_wmDeleteMessage = XInternAtom(m_pDisplay, "WM_DELETE_WINDOW", False);
+	XSetWMProtocols(m_pDisplay, m_Window, &m_wmDeleteMessage, 1);
+	
 	XMapRaised(m_pDisplay, m_Window);
 	XFlush(m_pDisplay);
 	
@@ -109,7 +113,9 @@ void CXLibWindow::ProcessEvents()
 	while (nEvents--)
 	{
 		XNextEvent(m_pDisplay, &event);
-		m_pEventHandler->HandleEvent(event);
+		bool bQuit = (event.type == ClientMessage)
+				&& (event.xclient.data.l[0] == m_wmDeleteMessage);
+		m_pEventHandler->HandleEvent(event, bQuit);
 	}
 }
 
@@ -136,4 +142,13 @@ int CXLibWindow::GetWindowHeight() const
 float CXLibWindow::GetAspectRatio() const
 {
 	return static_cast<float>(m_iWindowWidth) / static_cast<float>(m_iWindowHeight);
+}
+
+KeySym CXLibWindow::GetKey( const XKeyEvent &event ) const
+{
+	int keysyms_per_keycode_return = 0;
+	KeySym *pKey = static_cast<KeySym*>(XGetKeyboardMapping(m_pDisplay,event.keycode,1,&keysyms_per_keycode_return));
+	KeySym key = *pKey;
+	XFree(pKey);
+	return key;
 }

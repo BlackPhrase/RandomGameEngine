@@ -35,7 +35,7 @@ private:
 	// IXLibEventHandler interface
 	// ====================
 public:
-	virtual void HandleEvent( const XEvent &event );
+	virtual void HandleEvent( const XEvent &event, bool bQuit );
 
 	// ====================
 	// client interface
@@ -55,6 +55,8 @@ public:
 	virtual void		GetOnScreenRenderables( std::vector<renderableContext_t> &renderables ) const;
 	
 	virtual point_3d_t	GameToScreenCoords( const point_3d_t &gameCoords ) const;
+	
+	virtual void		ServerCommand( const std::string &command );
 
 	// ====================
 	// server interface

@@ -9,13 +9,13 @@ class IXLibEventHandler
 {
 public:
 	virtual ~IXLibEventHandler() {}
-	virtual void HandleEvent( const XEvent &event ) = 0;
+	virtual void HandleEvent( const XEvent &event, bool bQuit ) = 0;
 };
 
 class CNullEventHandler: public IXLibEventHandler
 {
 public:
-	virtual void HandleEvent(const XEvent &event) {}
+	virtual void HandleEvent(const XEvent &event, bool bQuit) {}
 };
 
 class CXLibWindow
@@ -46,6 +46,14 @@ public:
 	
 	float GetAspectRatio() const;
 	
+	KeySym GetKey( const XKeyEvent &event ) const;
+	
+	void SetAutoRepeat( bool bOn )
+	{
+		bOn ? XAutoRepeatOn(m_pDisplay) : XAutoRepeatOff(m_pDisplay);
+		XFlush(m_pDisplay);
+	}
+	
 private:
 	static CNullEventHandler m_NullEventHandler;
 
@@ -53,6 +61,8 @@ private:
 	Display *m_pDisplay;
 	int m_iScreen;
 	Window m_Window;
+	
+	Atom m_wmDeleteMessage;
 	
 	IXLibEventHandler *m_pEventHandler;
 	

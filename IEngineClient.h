@@ -3,6 +3,8 @@
 #define I_ENGINE_CLIENT_H
 
 #include "mathutil.h"
+#include <X11/Xlib.h>
+#include <string>
 
 class CGraphicsEngine;
 class CEntity;
@@ -29,6 +31,8 @@ public:
 	virtual void		GetOnScreenRenderables( std::vector<renderableContext_t> &renderables ) const = 0;
 	
 	virtual point_3d_t	GameToScreenCoords( const point_3d_t &gameCoords ) const = 0;
+	
+	virtual void		ServerCommand( const std::string &command ) = 0;
 };
 
 //
@@ -41,7 +45,7 @@ public:
 	virtual void	Shutdown() = 0;
 
 	// called by the engine when a key is pressed or released
-	virtual bool	KeyEvent() = 0;
+	virtual bool	KeyEvent( KeySym key, bool bPressed ) = 0;
 	
 	// called by the engine when the next frame should be run on the client
 	virtual void	Frame() = 0;

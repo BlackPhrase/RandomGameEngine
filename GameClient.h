@@ -16,7 +16,7 @@ public:
 	virtual void	Shutdown();
 
 	// called by the engine when a key is pressed or released
-	virtual bool	KeyEvent();
+	virtual bool	KeyEvent( KeySym key, bool bPressed );
 
 	// called by the engine when the next frame should be run on the client
 	virtual void	Frame();

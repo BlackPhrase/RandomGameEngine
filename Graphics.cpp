@@ -76,5 +76,5 @@ void CGraphicsEngine::NormalizedToScreenRes( float in_x, float in_y, uint_point_
 void CGraphicsEngine::RenderObject( const renderableContext_t &rC )
 {
 	XDrawRectangle(m_window.GetDisplay(), m_window.GetWindow(), m_graphicsContext, rC.position.m_x, rC.position.m_y, 32, 32);
-	sizzLog::LogDebug("rendered object: %, %", rC.position.m_x, rC.position.m_y);
+	//sizzLog::LogDebug("rendered object: %, %", rC.position.m_x, rC.position.m_y);
 }

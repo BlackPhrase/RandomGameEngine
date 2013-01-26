@@ -29,10 +29,42 @@ void CGameClient::Shutdown()
 }
 
 // called by the engine when a key is pressed or released
-bool CGameClient::KeyEvent()
+bool CGameClient::KeyEvent( KeySym key, bool bPressed )
 {
-	//sizzLog::LogDebug( "key event" );
-	sizzLog::LogInfo( "average frame time: %", m_pEngine->GetAverageFrameTime() );
+	switch (key)
+	{
+		case XK_d:
+		case XK_D:
+			{
+				m_pEngine->ServerCommand( bPressed ? "+right" : "-right" );
+			}
+			break;
+		case XK_a:
+		case XK_A:
+			{
+				m_pEngine->ServerCommand( bPressed ? "+left" : "-left" );
+			}
+			break;
+		case XK_w:
+		case XK_W:
+			{
+				m_pEngine->ServerCommand( bPressed ? "+up" : "-up" );
+			}
+			break;
+		case XK_s:
+		case XK_S:
+			{
+				m_pEngine->ServerCommand( bPressed ? "+down" : "-down" );
+			}
+			break;
+		case XK_space:
+			{
+				m_pEngine->ServerCommand( bPressed ? "+down" : "-down" );
+			}
+			break;
+		default:
+			break;
+	}
 	return false;
 }
 

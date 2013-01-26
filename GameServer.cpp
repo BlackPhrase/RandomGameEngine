@@ -59,7 +59,7 @@ void CGameServer::GameFrame( double dt )
 			--num;
 		}
 	}
-	sizzLog::LogDebug( "view at: %", GetViewBoundsEnt()->GetPhysComponent()->GetPosition().m_x );
+	//sizzLog::LogDebug( "view at: %", GetViewBoundsEnt()->GetPhysComponent()->GetPosition().m_x );
 }
 
 bool CGameServer::IsInViewBounds( CEntity *pEntity )
