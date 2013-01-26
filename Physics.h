@@ -34,9 +34,9 @@ public:
 	void SetXVelocity( double vel )		{ m_velocity.m_x = vel; }
 	void SetYVelocity( double vel )		{ m_velocity.m_y = vel; }
 	
-	void GetVelocity( point_2d_t &velocity ) const
+	point_2d_t GetVelocity() const
 	{
-		velocity = m_velocity;
+		return m_velocity;
 	}
 	
 	void SetAABBSize( const point_2d_t &AABBsize ) { m_AABBsize = AABBsize; }

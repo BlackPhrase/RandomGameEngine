@@ -138,7 +138,7 @@ void CEngine::HandleEvent( const XEvent &event, bool bQuit )
 			{
 				//sizzLog::LogDebug( "received KeyPress event" );
 				KeySym key = m_window.GetKey(event.xkey);
-				sizzLog::LogDebug("press %", XKeysymToString(key));
+				//sizzLog::LogDebug("press %", XKeysymToString(key));
 				m_pClient->KeyEvent(key, true);
 				//m_bQuit = true;
 			}
@@ -147,7 +147,7 @@ void CEngine::HandleEvent( const XEvent &event, bool bQuit )
 			{
 				//sizzLog::LogDebug( "received KeyRelease event" );
 				KeySym key = m_window.GetKey(event.xkey);
-				sizzLog::LogDebug("release %", XKeysymToString(key));
+				//sizzLog::LogDebug("release %", XKeysymToString(key));
 				m_pClient->KeyEvent(key, false);
 				//m_bQuit = true;
 			}
@@ -230,7 +230,7 @@ point_3d_t CEngine::GameToScreenCoords( const point_3d_t &gameCoords ) const
 
 void CEngine::ServerCommand( const std::string &command )
 {
-	//m_pServer
+	m_pServer->ReceiveCommand(command);
 }
 
 // ===================================================

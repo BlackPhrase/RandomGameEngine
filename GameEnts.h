@@ -105,4 +105,57 @@ private:
 	CGraphicsComponent m_graphics;
 };
 
+class CHelicopter: public CEntity
+{
+public:
+	CHelicopter() {}
+	~CHelicopter() {}
+	
+	virtual const CPhysicsComponent *GetPhysComponent() const
+	{
+		return &m_physics;
+	}
+	
+	virtual const CGraphicsComponent *GetGraphicsComponent() const
+	{
+		return &m_graphics;
+	}
+	
+	virtual void Update( double dt )
+	{
+		m_physics.Update(dt);
+	}
+	
+	void SetXVelocity( double vel )
+	{
+		m_physics.SetXVelocity(vel);
+	}
+	
+	void SetYVelocity( double vel )
+	{
+		m_physics.SetYVelocity(vel);
+	}
+	
+	void IncreaseXVelocity( double vel )
+	{
+		point_2d_t cur = m_physics.GetVelocity();
+		m_physics.SetXVelocity(cur.m_x + vel);
+	}
+	
+	void IncreaseYVelocity( double vel )
+	{
+		point_2d_t cur = m_physics.GetVelocity();
+		m_physics.SetYVelocity(cur.m_y + vel);
+	}
+	
+	void SetPosition(double x, double y)
+	{
+		m_physics.Set2DPosition({x, y});
+	}
+	
+private:
+	CPhysicsComponent m_physics;
+	CGraphicsComponent m_graphics;
+};
+
 #endif // GAME_ENTS_H

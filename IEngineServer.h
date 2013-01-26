@@ -3,6 +3,7 @@
 #define I_ENGINE_SERVER_H
 
 #include <stdint.h>
+#include <string>
 
 class CEntity;
 
@@ -36,6 +37,8 @@ public:
 	virtual void	GameFrame( double dt ) = 0;
 	
 	virtual bool	IsInViewBounds( CEntity *pEntity ) = 0;
+	
+	virtual void	ReceiveCommand( const std::string &command ) = 0;
 };
 
 #endif // I_ENGINE_SERVER_H
