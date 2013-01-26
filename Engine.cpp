@@ -4,12 +4,14 @@
 #include "Entity.h"
 #include "Renderable.h"
 #include "Physics.h"
+#include "GameEnts.h"
 #include "logger.h"
 
 CEngine::CEngine( CXLibWindow &window, IGameServer *pGameServer, IGameClient *pGameClient ):
 	m_window(window),
 	m_pServer(pGameServer),
 	m_pClient(pGameClient),
+	m_entViewBounds(0),
 	m_flCurTime(0.0),
 	m_flLastServerFrame(0.0),
 	m_flServerTimeAccumulator(0.0),
@@ -29,7 +31,7 @@ void CEngine::Init()
 {
 	m_window.SetEventHandler(this);
 	
-	m_pServer->Init(this);
+	m_entViewBounds = m_pServer->Init(this);
 	m_pClient->Init(this);
 }
 
@@ -91,9 +93,9 @@ void CEngine::ServerFrame()
 	
 	double time_now = sizzUtil::CurTimeSec();
 	double frame_time = time_now - m_flLastServerFrame;
-	if (frame_time > 0.250)
+	if (frame_time > 0.100)
 	{
-		frame_time = 0.250;
+		frame_time = 0.100;
 	}
 	m_flLastServerFrame = time_now;
 
@@ -183,10 +185,29 @@ void CEngine::GetOnScreenRenderables( std::vector<renderableContext_t> &renderab
 	{
 		if (pEntity && pEntity->GetGraphicsComponent() && m_pServer->IsInViewBounds(pEntity))
 		{
-			renderableContext_t context = { Physics::GetPosition(pEntity), *pEntity->GetGraphicsComponent() };
+			point_3d_t pos = GameToScreenCoords(Physics::GetPosition(pEntity));
+			renderableContext_t context = { pos, *pEntity->GetGraphicsComponent() };
 			renderables.emplace_back(context);
 		}
 	}
+}
+
+point_3d_t CEngine::GameToScreenCoords( const point_3d_t &gameCoords ) const
+{
+	C2DViewBounds *pView = dynamic_cast<C2DViewBounds*>(m_entityList[m_entViewBounds]);
+	point_2d_t viewPos = pView->GetPhysComponent()->Get2DPosition();
+
+	point_2d_t fov = pView->GetFov();
+	point_3d_t out = {0.0, 0.0, gameCoords.m_z};
+	
+	// calculates game coords with the view being the origin
+	out.m_x = gameCoords.m_x - viewPos.m_x;
+	out.m_y = gameCoords.m_y - viewPos.m_y;
+	
+	out.m_x *= (m_window.GetWindowWidth() / fov.m_x);
+	out.m_y *= (m_window.GetWindowHeight() / fov.m_y);
+	
+	return out;
 }
 
 // ===================================================

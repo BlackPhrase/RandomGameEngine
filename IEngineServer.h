@@ -26,7 +26,7 @@ public:
 class IGameServer
 {
 public:
-	virtual void	Init( IEngineServer *pEngine ) = 0;
+	virtual uint32_t	Init( IEngineServer *pEngine ) = 0;
 	virtual void	Shutdown() = 0;
 
 	virtual void	GameStart() = 0;

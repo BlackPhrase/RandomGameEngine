@@ -14,10 +14,11 @@ CGameServer::~CGameServer()
 {
 }
 
-void CGameServer::Init( IEngineServer *pEngine )
+uint32_t CGameServer::Init( IEngineServer *pEngine )
 {
 	m_pEngine = pEngine;
 	m_entViewBounds = pEngine->CreateEntity( new C2DViewBounds() );
+	return m_entViewBounds;
 }
 
 void CGameServer::Shutdown()
@@ -32,7 +33,9 @@ void CGameServer::GameStart()
 	
 	CBuilding *pBuilding = new CBuilding();
 	m_pEngine->CreateEntity(pBuilding);
-	pBuilding->SetXVelocity(1.0);
+	pBuilding->SetPosition(100.0, 100.0);
+	pBuilding->SetXVelocity(20.0);
+	pBuilding->SetYVelocity(0.0);
 	pBuilding->SetSize(32.0, 32.0);
 }
 

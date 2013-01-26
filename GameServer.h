@@ -12,7 +12,7 @@ public:
 	CGameServer();
 	~CGameServer();
 
-	virtual void	Init( IEngineServer *pEngine );
+	virtual uint32_t	Init( IEngineServer *pEngine );
 	virtual void	Shutdown();
 
 	virtual void	GameStart();

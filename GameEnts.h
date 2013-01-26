@@ -9,11 +9,9 @@
 class C2DViewBounds: public CEntity
 {
 public:
-	C2DViewBounds():
-		m_verticalFov(400.0),
-		m_horizontalFov(300.0)
+	C2DViewBounds()
 	{
-		point_2d_t size = {300.0, 400.0};
+		point_2d_t size = {480.0, 480.0};
 		m_physics.SetAABBSize(size);
 	}
 	
@@ -37,20 +35,28 @@ public:
 		m_physics.SetXVelocity(units);
 	}
 	
-	void SetHorizontalFov( double units )	{ m_horizontalFov = units; }
-	void SetVerticalFov( double units )		{ m_verticalFov = units; }
-	
-	void GetFov( double &vert_fov, double &horiz_fov ) const
+	void SetHorizontalFov( double units )
 	{
-		vert_fov = m_verticalFov;
-		horiz_fov = m_horizontalFov;
+		point_2d_t out = m_physics.GetAABBSize();
+		out.m_x = units;
+		m_physics.SetAABBSize(out);
+	}
+	
+	void SetVerticalFov( double units )
+	{
+		point_2d_t out = m_physics.GetAABBSize();
+		out.m_y = units;
+		m_physics.SetAABBSize(out);
+	}
+	
+	point_2d_t GetFov() const
+	{
+		return m_physics.GetAABBSize();
 	}
 	
 private:
 	CPhysicsComponent m_physics;
 	CGraphicsComponent m_graphics;
-	double m_verticalFov;
-	double m_horizontalFov;
 };
 
 class CBuilding: public CEntity
@@ -79,9 +85,19 @@ public:
 		m_physics.SetXVelocity(vel);
 	}
 	
+	void SetYVelocity( double vel )
+	{
+		m_physics.SetYVelocity(vel);
+	}
+	
 	void SetSize(double x, double y)
 	{
 		m_physics.SetAABBSize({x, y});
+	}
+	
+	void SetPosition(double x, double y)
+	{
+		m_physics.Set2DPosition({x, y});
 	}
 	
 private:

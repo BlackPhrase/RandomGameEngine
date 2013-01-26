@@ -25,6 +25,11 @@ public:
 	point_3d_t GetPosition() const	{ return m_position; }
 	point_2d_t Get2DPosition() const { return {m_position.m_x, m_position.m_y}; }
 	void SetPosition( const point_3d_t &pos )	{ m_position = pos; }
+	void Set2DPosition( const point_2d_t &pos )
+	{
+		m_position.m_x = pos.m_x;
+		m_position.m_y = pos.m_y;
+	}
 	
 	void SetXVelocity( double vel )		{ m_velocity.m_x = vel; }
 	void SetYVelocity( double vel )		{ m_velocity.m_y = vel; }

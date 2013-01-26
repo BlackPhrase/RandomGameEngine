@@ -27,6 +27,8 @@ public:
 	virtual void		SetPowerSaving( bool bEnable ) = 0;
 	
 	virtual void		GetOnScreenRenderables( std::vector<renderableContext_t> &renderables ) const = 0;
+	
+	virtual point_3d_t	GameToScreenCoords( const point_3d_t &gameCoords ) const = 0;
 };
 
 //

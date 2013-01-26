@@ -53,6 +53,8 @@ public:
 	virtual void		SetPowerSaving( bool bEnable );
 	
 	virtual void		GetOnScreenRenderables( std::vector<renderableContext_t> &renderables ) const;
+	
+	virtual point_3d_t	GameToScreenCoords( const point_3d_t &gameCoords ) const;
 
 	// ====================
 	// server interface
@@ -69,6 +71,8 @@ private:
 	CXLibWindow	&m_window;
 	IGameServer	*m_pServer;
 	IGameClient	*m_pClient;
+	
+	uint32_t	m_entViewBounds;
 
 	// time of this frame
 	double		m_flCurTime;
