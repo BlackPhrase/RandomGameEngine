@@ -8,6 +8,7 @@
 
 #include "utils.h"
 #include "logger.h"
+#include <cmath>
 
 CGraphicsEngine::CGraphicsEngine( CXLibWindow &window ):
 	m_window(window)
@@ -75,6 +76,31 @@ void CGraphicsEngine::NormalizedToScreenRes( float in_x, float in_y, uint_point_
 
 void CGraphicsEngine::RenderObject( const renderableContext_t &rC )
 {
-	XFillRectangle(m_window.GetDisplay(), m_window.GetWindow(), m_graphicsContext, rC.position.m_x, rC.position.m_y, 32, 32);
+	EShape shape = rC.gcomp.GetShape();
+	switch (shape)
+	{
+		case k_ePolygon:
+			{
+			}
+			break;
+		case k_eRectangle:
+			{
+				const rectangle_t *pRect = rC.gcomp.GetRectangle();
+				// bad cast from uint64_t to uint32_t
+				uint32_t x = sizzUtil::RoundDBL(ceil(rC.position.m_x));
+				uint32_t y = sizzUtil::RoundDBL(ceil(rC.position.m_y));
+				uint32_t width = sizzUtil::RoundDBL(ceil(pRect->m_max.m_x - pRect->m_min.m_x));
+				uint32_t height = sizzUtil::RoundDBL(ceil(pRect->m_max.m_y - pRect->m_min.m_y));
+				XFillRectangle(m_window.GetDisplay(), m_window.GetWindow(), m_graphicsContext,
+					x, y, width, height);
+			}
+			break;
+		case k_eArc:
+			{
+			}
+			break;
+		default:
+			break;
+	}
 	sizzLog::LogDebug("rendered object: %, %", rC.position.m_x, rC.position.m_y);
 }

@@ -31,6 +31,7 @@ public:
 	virtual void		GetOnScreenRenderables( std::vector<renderableContext_t> &renderables ) const = 0;
 	
 	virtual point_3d_t	GameToScreenCoords( const point_3d_t &gameCoords ) const = 0;
+	virtual point_2d_t	GameToScreenCoords( const point_2d_t &gameCoords ) const = 0;
 	
 	virtual void		ServerCommand( const std::string &command ) = 0;
 };

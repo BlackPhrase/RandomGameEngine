@@ -132,6 +132,7 @@ public:
 	
 	void SetSize(double x, double y)
 	{
+		m_graphics.SetRectangle({{0.0, 0.0}, {x, y}});
 		m_physics.SetAABBSize({x, y});
 	}
 	
@@ -203,6 +204,7 @@ public:
 	
 	void SetSize(double x, double y)
 	{
+		m_graphics.SetRectangle({{0.0, 0.0}, {x, y}});
 		m_physics.SetAABBSize({x, y});
 	}
 	

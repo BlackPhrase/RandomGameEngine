@@ -8,7 +8,8 @@
 CGameServer::CGameServer():
 	m_pEngine(NULL),
 	m_entViewBounds(0),
-	m_entHelicopter(0)
+	m_entHelicopter(0),
+	m_bGameOver(false)
 {
 }
 
@@ -73,9 +74,9 @@ void CGameServer::GameFrame( double dt )
 		}
 	}
 	
-	for (int j = 0; j < m_ents.size(); ++j)
+	for (uint32_t j = 0; j < m_ents.size(); ++j)
 	{
-		for (int k = 0; k < m_ents.size(); ++k)
+		for (uint32_t k = 0; k < m_ents.size(); ++k)
 		{
 			if (j != k)
 			{

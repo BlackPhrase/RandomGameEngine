@@ -204,7 +204,30 @@ void CEngine::GetOnScreenRenderables( std::vector<renderableContext_t> &renderab
 		if (pEntity && pEntity->GetGraphicsComponent() && m_pServer->IsInViewBounds(pEntity))
 		{
 			point_3d_t pos = GameToScreenCoords(Physics::GetPosition(pEntity));
-			renderableContext_t context = { pos, *pEntity->GetGraphicsComponent() };
+			renderableContext_t context = {pos, *pEntity->GetGraphicsComponent()};
+			EShape shape = context.gcomp.GetShape();
+			switch (shape)
+			{
+				case k_ePolygon:
+					{
+					}
+					break;
+				case k_eRectangle:
+					{
+						rectangle_t rect = *context.gcomp.GetRectangle();
+						rect.m_max = GameToScreenCoords(rect.m_max);
+						rect.m_min = GameToScreenCoords(rect.m_min);
+						context.gcomp.SetRectangle(rect);
+					}
+					break;
+				case k_eArc:
+					{
+					}
+					break;
+				default:
+					break;
+			}
+			
 			renderables.emplace_back(context);
 		}
 	}
@@ -226,6 +249,12 @@ point_3d_t CEngine::GameToScreenCoords( const point_3d_t &gameCoords ) const
 	out.m_y *= (m_window.GetWindowHeight() / fov.m_y);
 	
 	return out;
+}
+
+point_2d_t CEngine::GameToScreenCoords( const point_2d_t &gameCoords ) const
+{
+	point_3d_t temp = GameToScreenCoords( {gameCoords.m_x, gameCoords.m_y, 0.0} );
+	return { temp.m_x, temp.m_y };
 }
 
 void CEngine::ServerCommand( const std::string &command )

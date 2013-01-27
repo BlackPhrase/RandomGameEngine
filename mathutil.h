@@ -24,13 +24,6 @@ typedef struct point_3d_s
 	double m_z;
 } point_3d_t;
 
-typedef struct rect_s
-{
-	point_2d_t	m_position;
-	double		m_width;
-	double		m_length;
-} rect_t;
-
 class CAverageValueSampler
 {
 public:
