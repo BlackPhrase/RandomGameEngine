@@ -56,6 +56,7 @@ public:
 	
 	virtual point_3d_t	GameToScreenCoords( const point_3d_t &gameCoords ) const;
 	virtual point_2d_t	GameToScreenCoords( const point_2d_t &gameCoords ) const;
+	virtual point_2d_t	GameToScreenCoordsNoRebase( const point_2d_t &gameCoords ) const;
 	
 	virtual void		ServerCommand( const std::string &command );
 

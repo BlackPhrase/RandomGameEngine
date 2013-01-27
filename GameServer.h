@@ -33,6 +33,8 @@ private:
 	bool IsColliding( const CEntity *pEnt1, const CEntity *pEnt2 );
 	void HandleCollision( CEntity *pEnt1, CEntity *pEnt2 );
 	
+	void CheckSpawnBuilding();
+	
 private:
 	IEngineServer *m_pEngine;
 	uint32_t m_entViewBounds;

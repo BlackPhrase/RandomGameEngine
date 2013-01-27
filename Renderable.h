@@ -6,6 +6,7 @@
 #include <X11/Xlib.h>
 #include "mathutil.h"
 #include <cassert>
+#include <string>
 
 enum EShape
 {
@@ -23,7 +24,7 @@ typedef struct polygon_s
 typedef struct arc_s
 {
 	point_2d_t m_originOffset;
-	uint32_t m_radius;
+	point_2d_t m_size;
 } arc_t;
 
 typedef struct rectangle_s
@@ -95,8 +96,19 @@ public:
 		m_data.m_arc = arc;
 	}
 	
+	void SetColour( const std::string &c )
+	{
+		m_colour = c;
+	}
+	
+	const char *GetColour() const
+	{
+		return m_colour.c_str();
+	}
+	
 private:
 	EShape m_shape;
+	std::string m_colour;
 	union shapeInfo
 	{
 		polygon_t	m_polygon;

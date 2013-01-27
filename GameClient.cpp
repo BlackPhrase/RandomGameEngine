@@ -20,7 +20,7 @@ CGameClient::~CGameClient()
 void CGameClient::Init( IEngineClient *pEngine )
 {
 	m_pEngine = pEngine;
-	m_pEngine->SetFps(120);
+	m_pEngine->SetFps(50);
 	m_pEngine->SetPowerSaving(true);
 }
 
@@ -64,12 +64,12 @@ bool CGameClient::KeyEvent( KeySym key, bool bPressed )
 			break;
 		case XK_KP_Add:
 			{
-				m_pEngine->SetFps(120);
+				m_pEngine->SetFps(50);
 			}
 			break;
 		case XK_KP_Subtract:
 			{
-				m_pEngine->SetFps(60);
+				m_pEngine->SetFps(30);
 			}
 			break;
 		default:

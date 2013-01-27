@@ -215,13 +215,17 @@ void CEngine::GetOnScreenRenderables( std::vector<renderableContext_t> &renderab
 				case k_eRectangle:
 					{
 						rectangle_t rect = *context.gcomp.GetRectangle();
-						rect.m_max = GameToScreenCoords(rect.m_max);
-						rect.m_min = GameToScreenCoords(rect.m_min);
+						rect.m_max = GameToScreenCoordsNoRebase(rect.m_max);
+						rect.m_min = GameToScreenCoordsNoRebase(rect.m_min);
 						context.gcomp.SetRectangle(rect);
 					}
 					break;
 				case k_eArc:
 					{
+						arc_t arc = *context.gcomp.GetArc();
+						arc.m_originOffset = GameToScreenCoordsNoRebase(arc.m_originOffset);
+						arc.m_size = GameToScreenCoordsNoRebase(arc.m_size);
+						context.gcomp.SetArc(arc);
 					}
 					break;
 				default:
@@ -245,8 +249,8 @@ point_3d_t CEngine::GameToScreenCoords( const point_3d_t &gameCoords ) const
 	out.m_x = gameCoords.m_x - viewPos.m_x;
 	out.m_y = gameCoords.m_y - viewPos.m_y;
 	
-	out.m_x *= (m_window.GetWindowWidth() / fov.m_x);
-	out.m_y *= (m_window.GetWindowHeight() / fov.m_y);
+	out.m_x *= ((double)m_window.GetWindowWidth() / fov.m_x);
+	out.m_y *= ((double)m_window.GetWindowHeight() / fov.m_y);
 	
 	return out;
 }
@@ -255,6 +259,20 @@ point_2d_t CEngine::GameToScreenCoords( const point_2d_t &gameCoords ) const
 {
 	point_3d_t temp = GameToScreenCoords( {gameCoords.m_x, gameCoords.m_y, 0.0} );
 	return { temp.m_x, temp.m_y };
+}
+
+point_2d_t CEngine::GameToScreenCoordsNoRebase( const point_2d_t &gameCoords ) const
+{
+	C2DViewBounds *pView = dynamic_cast<C2DViewBounds*>(m_entityList[m_entViewBounds]);
+	point_2d_t viewPos = pView->GetPhysComponent()->Get2DPosition();
+
+	point_2d_t fov = pView->GetFov();
+	point_2d_t out = gameCoords;
+	
+	out.m_x *= ((double)m_window.GetWindowWidth() / fov.m_x);
+	out.m_y *= ((double)m_window.GetWindowHeight() / fov.m_y);
+	
+	return out;
 }
 
 void CEngine::ServerCommand( const std::string &command )

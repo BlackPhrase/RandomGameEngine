@@ -5,6 +5,8 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
+#include <X11/extensions/Xdbe.h>
+
 class IXLibEventHandler
 {
 public:
@@ -54,13 +56,21 @@ public:
 		XFlush(m_pDisplay);
 	}
 	
+	XdbeBackBuffer GetBackBuff() const { return m_backBuffer; }
+	
+	void SwapBuffers();
+	
+	bool SupportsDBE() const;
+	
 private:
 	static CNullEventHandler m_NullEventHandler;
 
 private:
+	XdbeBackBuffer m_backBuffer;
 	Display *m_pDisplay;
 	int m_iScreen;
 	Window m_Window;
+	Visual *m_pVisual;
 	
 	Atom m_wmDeleteMessage;
 	
@@ -68,6 +78,8 @@ private:
 	
 	int m_iWindowWidth;
 	int m_iWindowHeight;
+	
+	bool m_bSupportsDBE;
 };
 
 #endif // XLIB_WINDOW_H

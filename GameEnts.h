@@ -98,6 +98,7 @@ public:
 	CBuilding():
 		m_entInfo(k_eBuilding)
 	{
+		m_graphics.SetColour("grey");
 	}
 	
 	virtual void Update( double dt )
@@ -153,6 +154,7 @@ public:
 	CHelicopter():
 		m_entInfo(k_eLocalPlayer)
 	{
+		m_graphics.SetColour("blue");
 	}
 	
 	virtual const CPhysicsComponent *GetPhysComponent() const
@@ -204,7 +206,7 @@ public:
 	
 	void SetSize(double x, double y)
 	{
-		m_graphics.SetRectangle({{0.0, 0.0}, {x, y}});
+		m_graphics.SetArc({{0.0, 0.0}, {x, y}});
 		m_physics.SetAABBSize({x, y});
 	}
 	

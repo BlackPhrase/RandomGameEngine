@@ -37,10 +37,10 @@ void CGameServer::GameStart()
 	
 	CBuilding *pBuilding = new CBuilding();
 	m_pEngine->CreateEntity(pBuilding);
-	pBuilding->SetPosition(100.0, 100.0);
+	pBuilding->SetPosition(400.0, 100.0);
 	pBuilding->SetXVelocity(0.0);
 	pBuilding->SetYVelocity(0.0);
-	pBuilding->SetSize(32.0, 32.0);
+	pBuilding->SetSize(32.0, pView->GetFov().m_y);
 	
 	CHelicopter *pHelicopter = new CHelicopter();
 	m_entHelicopter = m_pEngine->CreateEntity(pHelicopter);
@@ -68,8 +68,16 @@ void CGameServer::GameFrame( double dt )
 		CEntity *pEnt = m_pEngine->GetEntity(i++);
 		if (pEnt)
 		{
-			pEnt->Update(dt);
-			m_ents.emplace_back(pEnt);
+			if (pEnt->IsMarkedForRemoval())
+			{
+				int index = m_pEngine->IndexOfEnt(pEnt);
+				m_pEngine->RemoveEntity(index);
+			}
+			else
+			{
+				pEnt->Update(dt);
+				m_ents.emplace_back(pEnt);
+			}
 			--num;
 		}
 	}
@@ -91,21 +99,28 @@ void CGameServer::GameFrame( double dt )
 		}
 	}
 	
-	num = m_pEngine->GetNumEntites();
-	i = 0;
-	while (num)
+	// this makes sure the heli doesn't go out of bounds
+	if (!m_bGameOver)
 	{
-		CEntity *pEnt = m_pEngine->GetEntity(i++);
-		if (pEnt)
-		{
-			if (pEnt->IsMarkedForRemoval())
-			{
-				int index = m_pEngine->IndexOfEnt(pEnt);
-				m_pEngine->RemoveEntity(index);
-			}
-			--num;
-		}
+		point_2d_t pos = GetHelicopter()->GetPhysComponent()->Get2DPosition();
+		point_2d_t heli_size = GetHelicopter()->GetPhysComponent()->GetAABBSize();
+		point_2d_t view_pos = GetViewBoundsEnt()->GetPhysComponent()->Get2DPosition();
+		point_2d_t view_pos_max = GetViewBoundsEnt()->GetPhysComponent()->GetAABBSize();
+		view_pos_max.m_x += view_pos.m_x;
+		view_pos_max.m_y += view_pos.m_y;
+		if (pos.m_x < view_pos.m_x)
+			pos.m_x = view_pos.m_x;
+		if (pos.m_y < view_pos.m_y)
+			pos.m_y = view_pos.m_y;
+		if (pos.m_x + heli_size.m_x > view_pos_max.m_x)
+			pos.m_x = view_pos_max.m_x - heli_size.m_x;
+		if (pos.m_y + heli_size.m_y > view_pos_max.m_y)
+			pos.m_y = view_pos_max.m_y - heli_size.m_y;
+		
+		GetHelicopter()->SetPosition(pos.m_x, pos.m_y);
 	}
+	
+	CheckSpawnBuilding();
 	
 	//sizzLog::LogDebug( "view at: %", GetViewBoundsEnt()->GetPhysComponent()->GetPosition().m_x );
 }
@@ -270,4 +285,9 @@ void CGameServer::HandleCollision( CEntity *pEnt1, CEntity *pEnt2 )
 			// don't care
 		}
 	}
+}
+
+void CGameServer::CheckSpawnBuilding()
+{
+	
 }

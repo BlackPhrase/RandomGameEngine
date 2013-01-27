@@ -1,6 +1,5 @@
 
 #include "XLibWindow.h"
-
 #include "logger.h"
 
 CNullEventHandler CXLibWindow::m_NullEventHandler;
@@ -9,9 +8,11 @@ CXLibWindow::CXLibWindow():
 	m_pDisplay(NULL),
 	m_iScreen(0),
 	m_Window(0),
+	m_pVisual(NULL),
 	m_pEventHandler(&m_NullEventHandler),
 	m_iWindowWidth(0),
-	m_iWindowHeight(0)
+	m_iWindowHeight(0),
+	m_bSupportsDBE(false)
 {
 }
 
@@ -49,6 +50,35 @@ bool CXLibWindow::OpenWindow( int argc, char *argv[] )
 	m_iWindowWidth = 640;
 	m_iWindowHeight = 480;
 	
+	int major, minor;
+	m_bSupportsDBE = XdbeQueryExtension(m_pDisplay, &major, &minor);
+	if (m_bSupportsDBE)
+	{
+		int numScreens = 1;
+		Drawable *pScreen = &DefaultRootWindow(m_pDisplay);
+		XdbeScreenVisualInfo *info = XdbeGetVisualInfo(m_pDisplay, pScreen, &numScreens);
+		if (!info || numScreens < 1 || info->count < 1) {
+			sizzLog::LogError("XDB not supported");
+			throw;
+		}
+		
+		XVisualInfo vis_info;
+		vis_info.visualid = info->visinfo[0].visual;
+		vis_info.screen = 0;
+		vis_info.depth = info->visinfo[0].depth;
+		
+		int matches;
+		XVisualInfo *vis_info_match =
+			XGetVisualInfo(m_pDisplay, VisualIDMask|VisualScreenMask|VisualDepthMask, &vis_info, &matches);
+			
+		if (!vis_info_match || matches < 1) {
+			sizzLog::LogError("couldn't find XDB supported window");
+			throw;
+		}
+		
+		m_pVisual = vis_info_match->visual;
+	}	
+	
 	XSizeHints hints =
 	{
 		PPosition | PSize,
@@ -58,14 +88,38 @@ bool CXLibWindow::OpenWindow( int argc, char *argv[] )
 		m_iWindowHeight,
 	};
 	
-	m_Window = XCreateSimpleWindow(
-		m_pDisplay,
-		DefaultRootWindow(m_pDisplay),
-		hints.x, hints.y,
-		hints.width, hints.height,
-		5,
-		black,
-		white );
+	if (m_bSupportsDBE)
+	{
+		unsigned long xAttrMask = CWBackPixel;
+		XSetWindowAttributes xAttr;
+		xAttr.border_pixel = black;
+		xAttr.background_pixel = white;
+	
+		m_Window = XCreateWindow(
+			m_pDisplay,
+			DefaultRootWindow(m_pDisplay),
+			hints.x, hints.y,
+			hints.width, hints.height,
+			0,
+			CopyFromParent,
+			CopyFromParent,
+			m_pVisual,
+			xAttrMask,
+			&xAttr);
+			
+		m_backBuffer = XdbeAllocateBackBufferName(m_pDisplay, m_Window, XdbeBackground);
+	}
+	else
+	{
+		m_Window = XCreateSimpleWindow(
+			m_pDisplay,
+			DefaultRootWindow(m_pDisplay),
+			hints.x, hints.y,
+			hints.width, hints.height,
+			0,
+			black,
+			white);
+	}
 	
 	XSetStandardProperties(
 		m_pDisplay,
@@ -151,4 +205,20 @@ KeySym CXLibWindow::GetKey( const XKeyEvent &event ) const
 	KeySym key = *pKey;
 	XFree(pKey);
 	return key;
+}
+
+void CXLibWindow::SwapBuffers()
+{
+	XdbeSwapInfo swapInfo;
+	swapInfo.swap_window = m_Window;
+	swapInfo.swap_action = XdbeBackground;
+
+	XdbeSwapBuffers(m_pDisplay, &swapInfo, 1);
+	XFlush(m_pDisplay);
+}
+
+bool CXLibWindow::SupportsDBE() const
+{
+	//return m_bSupportsDBE;
+	return false;
 }

@@ -2,7 +2,7 @@ CXX = g++
 CXXFLAGS = -Wall -MMD -std=c++0x
 
 XLIB_INC = -L/usr/X11R6/lib
-LDFLAGS = -lX11 -lrt
+LDFLAGS = -lX11 -lrt -lXext
 
 OBJECTS = 	main.o \
 		XLibWindow.o \

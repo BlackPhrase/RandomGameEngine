@@ -9,8 +9,8 @@
 
 namespace sizzUtil
 {
-	uint64_t RoundDBL( double num );
-	uint32_t RoundFlt( float num );
+	int64_t RoundDBL( double num );
+	int32_t RoundFlt( float num );
 	
 	double CurTimeSec();
 	double CurTimeMilli();
@@ -20,12 +20,12 @@ namespace sizzUtil
 	void ssprintf(std::stringstream &ss, const char* s);
 }
 
-inline uint64_t sizzUtil::RoundDBL( double num )
+inline int64_t sizzUtil::RoundDBL( double num )
 {
 	return static_cast<uint64_t>(num + 0.5);
 }
 
-inline uint32_t sizzUtil::RoundFlt( float num )
+inline int32_t sizzUtil::RoundFlt( float num )
 {
 	return static_cast<uint32_t>(num + 0.5);
 }
