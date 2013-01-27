@@ -59,7 +59,17 @@ bool CGameClient::KeyEvent( KeySym key, bool bPressed )
 			break;
 		case XK_space:
 			{
-				m_pEngine->ServerCommand( bPressed ? "+down" : "-down" );
+				m_pEngine->ServerCommand( bPressed ? "+shoot" : "-shoot" );
+			}
+			break;
+		case XK_KP_Add:
+			{
+				m_pEngine->SetFps(120);
+			}
+			break;
+		case XK_KP_Subtract:
+			{
+				m_pEngine->SetFps(60);
 			}
 			break;
 		default:

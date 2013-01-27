@@ -6,10 +6,37 @@
 #include "Physics.h"
 #include "Renderable.h"
 
+enum EObjectType
+{
+	k_eBullet = 0,
+	k_eLocalPlayer,
+	k_eBuilding,
+	k_eViewBounds,
+	k_eNumObjectTypes
+};
+
+class CEntInfo
+{
+public:
+	CEntInfo( EObjectType type ):
+		m_objType(type)
+	{
+	}
+	
+	EObjectType GetObjType() const
+	{
+		return m_objType;
+	}
+	
+private:
+	EObjectType m_objType;
+};
+
 class C2DViewBounds: public CEntity
 {
 public:
-	C2DViewBounds()
+	C2DViewBounds():
+		m_entInfo(k_eViewBounds)
 	{
 		point_2d_t size = {480.0, 480.0};
 		m_physics.SetAABBSize(size);
@@ -28,6 +55,11 @@ public:
 	virtual const CPhysicsComponent *GetPhysComponent() const
 	{
 		return &m_physics;
+	}
+	
+	virtual const CEntInfo *GetInfo() const
+	{
+		return &m_entInfo;
 	}
 	
 	void SetHorizontalScrollSpeed( double units )
@@ -57,13 +89,16 @@ public:
 private:
 	CPhysicsComponent m_physics;
 	CGraphicsComponent m_graphics;
+	CEntInfo m_entInfo;
 };
 
 class CBuilding: public CEntity
 {
 public:
-	CBuilding() {}
-	~CBuilding() {}
+	CBuilding():
+		m_entInfo(k_eBuilding)
+	{
+	}
 	
 	virtual void Update( double dt )
 	{
@@ -78,6 +113,11 @@ public:
 	virtual const CGraphicsComponent *GetGraphicsComponent() const
 	{
 		return &m_graphics;
+	}
+	
+	virtual const CEntInfo *GetInfo() const
+	{
+		return &m_entInfo;
 	}
 	
 	void SetXVelocity( double vel )
@@ -103,13 +143,16 @@ public:
 private:
 	CPhysicsComponent m_physics;
 	CGraphicsComponent m_graphics;
+	CEntInfo m_entInfo;
 };
 
 class CHelicopter: public CEntity
 {
 public:
-	CHelicopter() {}
-	~CHelicopter() {}
+	CHelicopter():
+		m_entInfo(k_eLocalPlayer)
+	{
+	}
 	
 	virtual const CPhysicsComponent *GetPhysComponent() const
 	{
@@ -119,6 +162,11 @@ public:
 	virtual const CGraphicsComponent *GetGraphicsComponent() const
 	{
 		return &m_graphics;
+	}
+	
+	virtual const CEntInfo *GetInfo() const
+	{
+		return &m_entInfo;
 	}
 	
 	virtual void Update( double dt )
@@ -153,9 +201,21 @@ public:
 		m_physics.Set2DPosition({x, y});
 	}
 	
+	void SetSize(double x, double y)
+	{
+		m_physics.SetAABBSize({x, y});
+	}
+	
 private:
 	CPhysicsComponent m_physics;
 	CGraphicsComponent m_graphics;
+	CEntInfo m_entInfo;
+};
+
+class CBullet
+{
+public:
+	
 };
 
 #endif // GAME_ENTS_H

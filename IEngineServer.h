@@ -17,6 +17,7 @@ public:
 	virtual void		RemoveEntity( uint32_t index ) = 0;
 	virtual CEntity		*GetEntity( uint32_t index ) = 0;
 	virtual uint32_t	GetNumEntites() const = 0;
+	virtual uint32_t	IndexOfEnt( const CEntity *pEnt ) const = 0;
 
 	virtual double		GetEngineTime() const = 0;
 };

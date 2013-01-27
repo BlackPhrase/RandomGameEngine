@@ -4,6 +4,7 @@
 
 #include "mathutil.h"
 #include "Entity.h"
+#include "logger.h"
 #include <cassert>
 
 class CPhysicsComponent
@@ -79,7 +80,7 @@ namespace Physics
 		assert( rect1_min.m_y <= rect1_max.m_y );
 		assert( rect2_min.m_x <= rect2_max.m_x );
 		assert( rect2_min.m_y <= rect2_max.m_y );
-
+		
 		if ( (rect1_min.m_x > rect2_max.m_x) || (rect1_max.m_x < rect2_min.m_x) )
 		{
 			return false;

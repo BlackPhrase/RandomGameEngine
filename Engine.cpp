@@ -268,7 +268,7 @@ void CEngine::RemoveEntity( uint32_t index )
 	if (pEnt)
 	{
 		delete pEnt;
-		pEnt = NULL;
+		m_entityList[index] = NULL;
 		--m_nEntities;
 	}
 }
@@ -285,6 +285,23 @@ CEntity *CEngine::GetEntity( uint32_t index )
 uint32_t CEngine::GetNumEntites() const
 {
 	return m_nEntities;
+}
+
+uint32_t CEngine::IndexOfEnt( const CEntity *pEnt ) const
+{
+	if (pEnt)
+	{
+		// bad loop, this should be constant time in a good design
+		for ( uint32_t i = 0; i < m_entityList.size(); ++i )
+		{
+			const CEntity *pTemp = m_entityList[i];
+			if (pEnt == pTemp)
+			{
+				return i;
+			}
+		}
+	}
+	return 0xffff;
 }
 
 double CEngine::GetEngineTime() const

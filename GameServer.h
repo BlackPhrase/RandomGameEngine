@@ -29,12 +29,15 @@ public:
 private:
 	C2DViewBounds *GetViewBoundsEnt();
 	CHelicopter *GetHelicopter();
+	
 	bool IsColliding( const CEntity *pEnt1, const CEntity *pEnt2 );
+	void HandleCollision( CEntity *pEnt1, CEntity *pEnt2 );
 	
 private:
 	IEngineServer *m_pEngine;
 	uint32_t m_entViewBounds;
 	uint32_t m_entHelicopter;
+	bool m_bGameOver;
 };
 
 #endif // GAME_SERVER_H

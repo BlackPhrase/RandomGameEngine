@@ -2,8 +2,20 @@
 #ifndef RENDERABLE_H
 #define RENDERABLE_H
 
+enum EShape
+{
+	k_ePolygon = 0,
+	k_eArc,
+	k_eRectangle,
+	k_eNumShapes
+};
+
 class CGraphicsComponent
 {
+public:
+
+private:
+	EShape m_shape;
 };
 
 typedef struct renderableContext_s
