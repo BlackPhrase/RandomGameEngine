@@ -262,6 +262,12 @@ void CGameServer::HandleCollision( CEntity *pEnt1, CEntity *pEnt2 )
 			pEnt1->MarkForRemoval();
 			// spawn explosion?
 		}
+		else if (obj2 == k_eTurret)
+		{
+			pEnt1->MarkForRemoval();
+			pEnt2->MarkForRemoval();
+			// spawn explosion?
+		}
 	}
 	else if (obj1 == k_eLocalPlayer)
 	{
@@ -287,6 +293,12 @@ void CGameServer::HandleCollision( CEntity *pEnt1, CEntity *pEnt2 )
 		{
 			// don't care
 		}
+		else if (obj2 == k_eTurret)
+		{
+			pEnt1->MarkForRemoval();
+			pEnt2->MarkForRemoval();
+			GameEnd();
+		}
 	}
 	else if (obj1 == k_eBuilding)
 	{
@@ -308,6 +320,38 @@ void CGameServer::HandleCollision( CEntity *pEnt1, CEntity *pEnt2 )
 		else if (obj2 == k_eViewBounds)
 		{
 			// don't care
+		}
+		else if (obj2 == k_eTurret)
+		{
+			// don't care
+		}
+	}
+	else if (obj1 == k_eTurret)
+	{
+		if (obj2 == k_eBullet)
+		{
+			pEnt1->MarkForRemoval();
+			pEnt2->MarkForRemoval();
+			// spawn explosion?
+		}
+		else if (obj2 == k_eLocalPlayer)
+		{
+			pEnt1->MarkForRemoval();
+			pEnt2->MarkForRemoval();
+			// game over, spawn explosion?
+			GameEnd();
+		}
+		else if (obj2 == k_eBuilding)
+		{
+			// don't care
+		}
+		else if (obj2 == k_eViewBounds)
+		{
+			// don't care
+		}
+		else if (obj2 == k_eTurret)
+		{
+			 //don't care
 		}
 	}
 }
@@ -337,6 +381,11 @@ void CGameServer::CheckSpawnBuilding()
 			pBuilding->SetXVelocity(0.0);
 			pBuilding->SetYVelocity(0.0);
 			pBuilding->SetSize(m_flLastBuildingWidth, pView->GetFov().m_y);
+			
+			CTurret *pTurret = new CTurret();
+			m_pEngine->CreateEntity(pTurret);
+			pTurret->SetPosition(building_pos + m_flLastBuildingWidth/2 - 2.5,
+					height - 15.0 );
 		}
 	}
 }
