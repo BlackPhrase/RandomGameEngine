@@ -3,11 +3,13 @@
 #define GAME_SERVER_H
 
 #include "IEngineServer.h"
+#include "BulletSpawner.h"
 
 class C2DViewBounds;
 class CHelicopter;
+class CBullet;
 
-class CGameServer: public IGameServer
+class CGameServer: public IGameServer, public IBulletSpawner
 {
 public:
 	CGameServer();
@@ -25,6 +27,9 @@ public:
 	virtual bool	IsInViewBounds( CEntity *pEntity );
 	
 	virtual void	ReceiveCommand( const std::string &command );
+	
+private:
+	virtual void SpawnBullet( CBullet *pBullet );
 	
 private:
 	C2DViewBounds *GetViewBoundsEnt();

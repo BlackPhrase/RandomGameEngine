@@ -8,6 +8,7 @@
 
 int main( int argc, char *argv[] )
 {
+	srand(0);
 	CXLibWindow window;
 	
 	if (window.OpenWindow(argc, argv))

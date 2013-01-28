@@ -64,7 +64,6 @@ void CGameServer::GameFrame( double dt )
 		int i = 0;
 		for (int ents_processed = 0; ents_processed < m_pEngine->GetNumEntites();)
 		{
-			sizzLog::LogDebug("% ents processed, % total", ents_processed, m_pEngine->GetNumEntites());
 			CEntity *pEnt = m_pEngine->GetEntity(i++);
 			if (pEnt)
 			{
@@ -215,6 +214,14 @@ void CGameServer::ReceiveCommand( const std::string &command )
 	}
 }
 
+void CGameServer::SpawnBullet( CBullet *pBullet )
+{
+	if (pBullet)
+	{
+		m_pEngine->CreateEntity(pBullet);
+	}
+}
+
 C2DViewBounds *CGameServer::GetViewBoundsEnt()
 {
 	return dynamic_cast<C2DViewBounds*>(m_pEngine->GetEntity(m_entViewBounds));
@@ -242,7 +249,6 @@ void CGameServer::HandleCollision( CEntity *pEnt1, CEntity *pEnt2 )
 {
 	const CEntInfo *pInfo1 = pEnt1->GetInfo();
 	const CEntInfo *pInfo2 = pEnt2->GetInfo();
-	rand() % 30 + 1985;
 	EObjectType obj1 = pInfo1->GetObjType();
 	EObjectType obj2 = pInfo2->GetObjType();
 	
@@ -373,12 +379,12 @@ void CGameServer::CheckSpawnBuilding()
 		if ((m_flViewPosOnLastBuildingSpawn + m_flLastBuildingWidth + rand_distance) <= cur_view_pos)
 		{
 			rand_distance = sizzUtil::Rand_Bounded(0.0, 50.0);
-			m_flLastBuildingWidth = sizzUtil::Rand_Bounded(32.0, 70.0);
+			m_flLastBuildingWidth = sizzUtil::Rand_Bounded(16.0, 70.0);
 			m_flViewPosOnLastBuildingSpawn = cur_view_pos;
 			
 			CBuilding *pBuilding = new CBuilding();
 			m_pEngine->CreateEntity(pBuilding);
-			int32_t height = sizzUtil::Rand_Bounded(75.0, 430.0);
+			int32_t height = sizzUtil::Rand_Bounded(150, 430.0);
 			int32_t building_pos = cur_view_pos + pViewPhys->GetAABBSize().m_x;
 			
 			pBuilding->SetPosition(building_pos, height);
@@ -386,7 +392,7 @@ void CGameServer::CheckSpawnBuilding()
 			pBuilding->SetYVelocity(0.0);
 			pBuilding->SetSize(m_flLastBuildingWidth, pView->GetFov().m_y);
 			
-			CTurret *pTurret = new CTurret();
+			CTurret *pTurret = new CTurret(this);
 			pTurret->SetPosition( (double)building_pos + m_flLastBuildingWidth/10, height - 10.0);
 			pTurret->SetSize(5.0, 10.0);
 			m_pEngine->CreateEntity(pTurret);

@@ -5,6 +5,7 @@
 #include "Entity.h"
 #include "Physics.h"
 #include "Renderable.h"
+#include "BulletSpawner.h"
 
 enum EObjectType
 {
@@ -243,6 +244,11 @@ public:
 		m_physics.Update(dt);
 	}
 	
+	void SetColour( const std::string &colour )
+	{
+		m_graphics.SetColour(colour);
+	}
+	
 	void SetXVelocity( double vel )
 	{
 		m_physics.SetXVelocity(vel);
@@ -273,8 +279,11 @@ private:
 class CTurret: public CEntity
 {
 public:
-	CTurret():
-		m_entInfo(k_eTurret)
+	CTurret( IBulletSpawner *pSpawner ):
+		m_entInfo(k_eTurret),
+		m_pBulletSpawner(pSpawner),
+		m_flLastBulletSpawn(0.0),
+		m_flBulletSpawnRate(1.0)
 	{
 		m_graphics.SetColour("brown");
 	}
@@ -297,6 +306,19 @@ public:
 	virtual void Update( double dt )
 	{
 		m_physics.Update(dt);
+		double cur_time = sizzUtil::CurTimeSec();
+		if ((m_flLastBulletSpawn + m_flBulletSpawnRate) <= cur_time)
+		{
+			m_flLastBulletSpawn = cur_time;
+			CBullet *pBullet = new CBullet();
+			pBullet->SetColour("red");
+			
+			point_2d_t temp = m_physics.Get2DPosition();
+			double center_x = temp.m_x;
+			pBullet->SetPosition(center_x, temp.m_y-10.0);
+			pBullet->SetYVelocity(-300.0);
+			m_pBulletSpawner->SpawnBullet(pBullet);
+		}
 	}
 	
 	void SetXVelocity( double vel )
@@ -324,6 +346,10 @@ private:
 	CPhysicsComponent m_physics;
 	CGraphicsComponent m_graphics;
 	CEntInfo m_entInfo;
+	
+	IBulletSpawner *m_pBulletSpawner;
+	double m_flLastBulletSpawn;
+	double m_flBulletSpawnRate;
 };
 
 #endif // GAME_ENTS_H
