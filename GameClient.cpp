@@ -20,7 +20,7 @@ CGameClient::~CGameClient()
 void CGameClient::Init( IEngineClient *pEngine )
 {
 	m_pEngine = pEngine;
-	m_pEngine->SetFps(50);
+	m_pEngine->SetFps(120);
 	m_pEngine->SetPowerSaving(true);
 }
 

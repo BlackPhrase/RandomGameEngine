@@ -78,7 +78,11 @@ void CGameServer::GameFrame( double dt )
 					// remove viewable entities not in the view
 					if (pEnt->GetGraphicsComponent() && !IsInViewBounds(pEnt))
 					{
-						pEnt->MarkForRemoval();
+						// don't delete things to the right, cause they are just spawning
+						if (!IsToTheRightOfViewBounds(pEnt))
+						{
+							pEnt->MarkForRemoval();
+						}
 					}
 					else
 					{
@@ -369,12 +373,12 @@ void CGameServer::CheckSpawnBuilding()
 		if ((m_flViewPosOnLastBuildingSpawn + m_flLastBuildingWidth + rand_distance) <= cur_view_pos)
 		{
 			rand_distance = sizzUtil::Rand_Bounded(0.0, 50.0);
-			m_flLastBuildingWidth = sizzUtil::Rand_Bounded(32.0, 50.0);
+			m_flLastBuildingWidth = sizzUtil::Rand_Bounded(32.0, 70.0);
 			m_flViewPosOnLastBuildingSpawn = cur_view_pos;
 			
 			CBuilding *pBuilding = new CBuilding();
 			m_pEngine->CreateEntity(pBuilding);
-			int32_t height = sizzUtil::Rand_Bounded(130.0, 430.0);
+			int32_t height = sizzUtil::Rand_Bounded(75.0, 430.0);
 			int32_t building_pos = cur_view_pos + pViewPhys->GetAABBSize().m_x;
 			
 			pBuilding->SetPosition(building_pos, height);
@@ -383,9 +387,10 @@ void CGameServer::CheckSpawnBuilding()
 			pBuilding->SetSize(m_flLastBuildingWidth, pView->GetFov().m_y);
 			
 			CTurret *pTurret = new CTurret();
+			pTurret->SetPosition( (double)building_pos + m_flLastBuildingWidth/10, height - 10.0);
+			pTurret->SetSize(5.0, 10.0);
 			m_pEngine->CreateEntity(pTurret);
-			pTurret->SetPosition(building_pos + m_flLastBuildingWidth/2 - 2.5,
-					height - 15.0 );
+			
 		}
 	}
 }
@@ -411,4 +416,23 @@ void CGameServer::CheckHeliFireBullet()
 			m_pEngine->CreateEntity(pBullet);
 		}
 	}
+}
+
+bool CGameServer::IsToTheRightOfViewBounds( CEntity *pEnt )
+{
+	if (pEnt && pEnt->GetPhysComponent())
+	{
+		C2DViewBounds *pView = GetViewBoundsEnt();
+		if (pView != pEnt)
+		{
+			const CPhysicsComponent *pPhysView = pView->GetPhysComponent();
+			const CPhysicsComponent *pPhysEnt = pEnt->GetPhysComponent();
+			
+			double ent_x = pPhysEnt->Get2DPosition().m_x;
+			double view_x_max = pPhysView->Get2DPosition().m_x + pPhysView->GetAABBSize().m_x;
+			
+			return ent_x > view_x_max;
+		}
+	}
+	return false;
 }

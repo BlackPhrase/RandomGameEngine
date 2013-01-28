@@ -277,7 +277,6 @@ public:
 		m_entInfo(k_eTurret)
 	{
 		m_graphics.SetColour("brown");
-		SetSize(5.0, 10.0);
 	}
 	
 	virtual const CPhysicsComponent *GetPhysComponent() const

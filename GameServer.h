@@ -36,6 +36,8 @@ private:
 	void CheckSpawnBuilding();
 	void CheckHeliFireBullet();
 	
+	bool IsToTheRightOfViewBounds( CEntity *pEnt );
+	
 private:
 	IEngineServer *m_pEngine;
 	uint32_t m_entViewBounds;
