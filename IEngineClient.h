@@ -34,6 +34,9 @@ public:
 	virtual point_2d_t	GameToScreenCoords( const point_2d_t &gameCoords ) const = 0;
 	
 	virtual void		ServerCommand( const std::string &command ) = 0;
+	
+	virtual void		PauseGame() = 0;
+	virtual void		UnpauseGame() = 0;
 };
 
 //

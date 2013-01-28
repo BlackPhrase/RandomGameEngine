@@ -72,6 +72,35 @@ bool CGameClient::KeyEvent( KeySym key, bool bPressed )
 				m_pEngine->SetFps(60);
 			}
 			break;
+		case XK_f:
+		case XK_F:
+			{
+				static bool toggle = true;
+				if (bPressed)
+				{
+					if (toggle)
+					{
+						m_pEngine->PauseGame();
+						toggle = false;
+					}
+					else
+					{
+						m_pEngine->UnpauseGame();
+						toggle = true;
+					}
+				}
+			}
+			break;
+		case XK_bracketright:
+			{
+				m_pEngine->ServerCommand( "speed_inc" );
+			}
+			break;
+		case XK_bracketleft:
+			{
+				m_pEngine->ServerCommand( "speed_dec" );
+			}
+			break;
 		default:
 			break;
 	}

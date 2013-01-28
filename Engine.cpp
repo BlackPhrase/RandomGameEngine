@@ -21,6 +21,7 @@ CEngine::CEngine( CXLibWindow &window, IGameServer *pGameServer, IGameClient *pG
 	m_flDesiredFrameTime(1000.0/60.0),
 	m_nEntities(0),
 	m_bPowerSaving(false),
+	m_bPaused(false),
 	m_bQuit(false)
 {
 }
@@ -73,8 +74,10 @@ void CEngine::ClientFrame()
 		m_FpsSampler.TakeSample(cur_time - m_flNextClientFrameTime);
 		
 		m_flNextClientFrameTime = cur_time + m_flDesiredFrameTime;
-		
-		ServerFrame();
+		if (!m_bPaused)
+		{
+			ServerFrame();
+		}
 		m_pClient->Frame();
 	}
 	else if (m_bPowerSaving)
@@ -278,6 +281,16 @@ point_2d_t CEngine::GameToScreenCoordsNoRebase( const point_2d_t &gameCoords ) c
 void CEngine::ServerCommand( const std::string &command )
 {
 	m_pServer->ReceiveCommand(command);
+}
+
+void CEngine::PauseGame()
+{
+	m_bPaused = true;
+}
+
+void CEngine::UnpauseGame()
+{
+	m_bPaused = false;
 }
 
 // ===================================================

@@ -83,6 +83,15 @@ public:
 		return m_physics.GetAABBSize();
 	}
 	
+	void IncreaseHorizontalSpeed( double amount )
+	{
+		point_2d_t speed = m_physics.GetVelocity();
+		if ( (speed.m_x + amount) > 0 )
+		{
+			m_physics.SetXVelocity(speed.m_x + amount);
+		}
+	}
+	
 private:
 	CPhysicsComponent m_physics;
 	CEntInfo m_entInfo;
@@ -306,7 +315,7 @@ public:
 	virtual void Update( double dt )
 	{
 		m_physics.Update(dt);
-		double cur_time = sizzUtil::CurTimeSec();
+		double cur_time = m_pBulletSpawner->EngineTime();
 		if ((m_flLastBulletSpawn + m_flBulletSpawnRate) <= cur_time)
 		{
 			m_flLastBulletSpawn = cur_time;

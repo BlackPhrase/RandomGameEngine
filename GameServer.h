@@ -30,6 +30,7 @@ public:
 	
 private:
 	virtual void SpawnBullet( CBullet *pBullet );
+	virtual double EngineTime();
 	
 private:
 	C2DViewBounds *GetViewBoundsEnt();

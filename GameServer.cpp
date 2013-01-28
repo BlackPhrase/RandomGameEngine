@@ -211,6 +211,16 @@ void CGameServer::ReceiveCommand( const std::string &command )
 			//GetHelicopter()->StopShooting();
 			m_bFiringBullets = false;
 		}
+		else if (command == "speed_inc")
+		{
+			C2DViewBounds *pView = GetViewBoundsEnt();
+			pView->IncreaseHorizontalSpeed(10.0);
+		}
+		else if (command == "speed_dec")
+		{
+			C2DViewBounds *pView = GetViewBoundsEnt();
+			pView->IncreaseHorizontalSpeed(-10.0);
+		}
 	}
 }
 
@@ -220,6 +230,11 @@ void CGameServer::SpawnBullet( CBullet *pBullet )
 	{
 		m_pEngine->CreateEntity(pBullet);
 	}
+}
+
+double CGameServer::EngineTime()
+{
+	return m_pEngine->GetEngineTime();
 }
 
 C2DViewBounds *CGameServer::GetViewBoundsEnt()
@@ -415,6 +430,7 @@ void CGameServer::CheckHeliFireBullet()
 			point_2d_t heli_aabb = pPhys->GetAABBSize();
 			
 			CBullet *pBullet = new CBullet();
+			pBullet->SetColour("yellow");
 			pBullet->SetPosition(heli_pos.m_x + heli_aabb.m_x, heli_pos.m_y + 40);
 			pBullet->SetXVelocity(heli_vel.m_x);
 			double y_vel = (heli_vel.m_y > 0) ? heli_vel.m_y + 90 : 90;

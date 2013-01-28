@@ -59,6 +59,9 @@ public:
 	virtual point_2d_t	GameToScreenCoordsNoRebase( const point_2d_t &gameCoords ) const;
 	
 	virtual void		ServerCommand( const std::string &command );
+	
+	virtual void		PauseGame();
+	virtual void		UnpauseGame();
 
 	// ====================
 	// server interface
@@ -93,6 +96,7 @@ private:
 	uint32_t	m_nEntities;
 
 	bool		m_bPowerSaving;
+	bool		m_bPaused;
 	bool		m_bQuit;
 };
 
