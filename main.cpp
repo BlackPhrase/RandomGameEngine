@@ -21,7 +21,19 @@ int main( int argc, char *argv[] )
 		CEngine engine(window, &server, &client);
 		
 		engine.Init();
-		engine.Run();
+		bool playing = true;
+		while (playing)
+		{
+			try
+			{
+				engine.Run();
+				playing = false;
+			}
+			catch( bool quit )
+			{
+				playing = quit;
+			}
+		}
 		engine.Shutdown();
 
 		window.CloseWindow();

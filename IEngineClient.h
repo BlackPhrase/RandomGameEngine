@@ -37,6 +37,7 @@ public:
 	
 	virtual void		PauseGame() = 0;
 	virtual void		UnpauseGame() = 0;
+	virtual bool		IsPaused() = 0;
 };
 
 //

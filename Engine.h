@@ -62,6 +62,7 @@ public:
 	
 	virtual void		PauseGame();
 	virtual void		UnpauseGame();
+	virtual bool		IsPaused();
 
 	// ====================
 	// server interface

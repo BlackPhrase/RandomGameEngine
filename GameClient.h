@@ -20,6 +20,9 @@ public:
 
 	// called by the engine when the next frame should be run on the client
 	virtual void	Frame();
+	
+private:
+	void ShowSplash();
 
 public:
 	IEngineClient *m_pEngine;

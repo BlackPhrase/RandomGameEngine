@@ -293,6 +293,11 @@ void CEngine::UnpauseGame()
 	m_bPaused = false;
 }
 
+bool CEngine::IsPaused()
+{
+	return m_bPaused;
+}
+
 // ===================================================
 // Server Interface
 // ===================================================
