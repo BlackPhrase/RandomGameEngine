@@ -43,9 +43,11 @@ private:
 	
 	double m_flLastBuildingWidth;
 	double m_flViewPosOnLastBuildingSpawn;
+	double m_flLastFireBullet;
 	
 	bool m_bGameOver;
 	bool m_bViewMoving;
+	bool m_bFiringBullets;
 };
 
 #endif // GAME_SERVER_H

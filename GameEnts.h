@@ -210,10 +210,61 @@ private:
 	CEntInfo m_entInfo;
 };
 
-class CBullet
+class CBullet: public CEntity
 {
 public:
+	CBullet():
+		m_entInfo(k_eBullet)
+	{
+		m_graphics.SetColour("red");
+		SetSize(5.0, 5.0);
+	}
 	
+	virtual const CPhysicsComponent *GetPhysComponent() const
+	{
+		return &m_physics;
+	}
+	
+	virtual const CGraphicsComponent *GetGraphicsComponent() const
+	{
+		return &m_graphics;
+	}
+	
+	virtual const CEntInfo *GetInfo() const
+	{
+		return &m_entInfo;
+	}
+	
+	virtual void Update( double dt )
+	{
+		m_physics.Update(dt);
+	}
+	
+	void SetXVelocity( double vel )
+	{
+		m_physics.SetXVelocity(vel);
+	}
+	
+	void SetYVelocity( double vel )
+	{
+		m_physics.SetYVelocity(vel);
+	}
+	
+	void SetPosition(double x, double y)
+	{
+		m_physics.Set2DPosition({x, y});
+	}
+	
+	void SetSize(double x, double y)
+	{
+		m_graphics.SetArc({{0.0, 0.0}, {x, y}});
+		m_physics.SetAABBSize({x, y});
+	}
+	
+private:
+	CPhysicsComponent m_physics;
+	CGraphicsComponent m_graphics;
+	CEntInfo m_entInfo;
 };
 
 #endif // GAME_ENTS_H

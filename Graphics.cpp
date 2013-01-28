@@ -54,8 +54,10 @@ void CGraphicsEngine::BeginFrame()
 	XFillRectangle(m_window.GetDisplay(), m_window.GetBackBuff(), m_graphicsContext,
 		0, 0, m_window.GetWindowWidth(), m_window.GetWindowHeight()*0.8);
 	SetActiveColour(GetColour("darkgrey"));
+	// fill goes over the bottom on purpose
 	XFillRectangle(m_window.GetDisplay(), m_window.GetBackBuff(), m_graphicsContext,
-		0, m_window.GetWindowHeight()*0.95, m_window.GetWindowWidth(), m_window.GetWindowHeight()*0.05);
+		0, m_window.GetWindowHeight()*0.95, m_window.GetWindowWidth(), m_window.GetWindowHeight()*0.1);
+	
 }
 
 void CGraphicsEngine::EndFrame()

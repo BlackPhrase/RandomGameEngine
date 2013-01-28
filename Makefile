@@ -1,4 +1,4 @@
-CXX = g++
+CXX = g++-4.6
 CXXFLAGS = -Wall -MMD -std=c++0x
 
 XLIB_INC = -L/usr/X11R6/lib

@@ -11,8 +11,10 @@ CGameServer::CGameServer():
 	m_entHelicopter(0),
 	m_flLastBuildingWidth(0.0),
 	m_flViewPosOnLastBuildingSpawn(0.0),
+	m_flLastFireBullet(0.0),
 	m_bGameOver(false),
-	m_bViewMoving(false)
+	m_bViewMoving(false),
+	m_bFiringBullets(false)
 {
 }
 
@@ -36,12 +38,12 @@ void CGameServer::GameStart()
 	m_bGameOver = false;
 	C2DViewBounds *pView = GetViewBoundsEnt();
 	// set view position here too...
-	pView->SetHorizontalScrollSpeed(200.0);
+	pView->SetHorizontalScrollSpeed(100.0);
 	m_bViewMoving = true;
 	
 	CHelicopter *pHelicopter = new CHelicopter();
 	m_entHelicopter = m_pEngine->CreateEntity(pHelicopter);
-	pHelicopter->SetXVelocity(50.0);
+	pHelicopter->SetXVelocity(100.0);
 	pHelicopter->SetPosition(20.0, 20.0);
 	pHelicopter->SetSize(32.0, 32.0);
 }
@@ -134,9 +136,13 @@ void CGameServer::GameFrame( double dt )
 			pos.m_y = view_pos_max.m_y - heli_size.m_y;
 		}
 		GetHelicopter()->SetPosition(pos.m_x, pos.m_y);
+		
+		// do checks for firing and stuff
+		CheckHeliFireBullet();
+		CheckSpawnBuilding();
 	}
 	
-	CheckSpawnBuilding();
+	
 	
 	//sizzLog::LogDebug( "view at: %", GetViewBoundsEnt()->GetPhysComponent()->GetPosition().m_x );
 }
@@ -158,46 +164,49 @@ void CGameServer::ReceiveCommand( const std::string &command )
 {
 	if (!m_bGameOver)
 	{
+		static const double heli_speed = 200.0;
 		sizzLog::LogDebug("got command: %", command);
 		if (command == "+up")
 		{
-			GetHelicopter()->IncreaseYVelocity(-100.0);
+			GetHelicopter()->IncreaseYVelocity(-heli_speed);
 		}
 		else if (command == "-up")
 		{
-			GetHelicopter()->IncreaseYVelocity(100.0);
+			GetHelicopter()->IncreaseYVelocity(heli_speed);
 		}
 		else if (command == "+down")
 		{
-			GetHelicopter()->IncreaseYVelocity(100.0);
+			GetHelicopter()->IncreaseYVelocity(heli_speed);
 		}
 		else if (command == "-down")
 		{
-			GetHelicopter()->IncreaseYVelocity(-100.0);
+			GetHelicopter()->IncreaseYVelocity(-heli_speed);
 		}
 		else if (command == "+left")
 		{
-			GetHelicopter()->IncreaseXVelocity(-100.0);
+			GetHelicopter()->IncreaseXVelocity(-heli_speed);
 		}
 		else if (command == "-left")
 		{
-			GetHelicopter()->IncreaseXVelocity(100.0);
+			GetHelicopter()->IncreaseXVelocity(heli_speed);
 		}
 		else if (command == "+right")
 		{
-			GetHelicopter()->IncreaseXVelocity(100.0);
+			GetHelicopter()->IncreaseXVelocity(heli_speed);
 		}
 		else if (command == "-right")
 		{
-			GetHelicopter()->IncreaseXVelocity(-100.0);
+			GetHelicopter()->IncreaseXVelocity(-heli_speed);
 		}
 		else if (command == "+shoot")
 		{
 			//GetHelicopter()->StartShooting();
+			m_bFiringBullets = true;
 		}
 		else if (command == "-shoot")
 		{
 			//GetHelicopter()->StopShooting();
+			m_bFiringBullets = false;
 		}
 	}
 }
@@ -316,7 +325,7 @@ void CGameServer::CheckSpawnBuilding()
 		if ((m_flViewPosOnLastBuildingSpawn + m_flLastBuildingWidth + rand_distance) <= cur_view_pos)
 		{
 			rand_distance = sizzUtil::Rand_Bounded(0.0, 50.0);
-			m_flLastBuildingWidth = 32.0;
+			m_flLastBuildingWidth = sizzUtil::Rand_Bounded(32.0, 50.0);
 			m_flViewPosOnLastBuildingSpawn = cur_view_pos;
 			
 			CBuilding *pBuilding = new CBuilding();
@@ -333,11 +342,24 @@ void CGameServer::CheckSpawnBuilding()
 }
 
 void CGameServer::CheckHeliFireBullet()
-{/*
-	double cur_time = m_pEngine->GetEngineTime();
-	if (m_flLastFireBullet + 0.5 <= cur_time)
+{
+	if (m_bFiringBullets)
 	{
-		
-		m_pEngine->CreateEntity(pBullet);
-	}*/
+		double cur_time = m_pEngine->GetEngineTime();
+		if (m_flLastFireBullet + 0.1 <= cur_time)
+		{
+			m_flLastFireBullet = m_pEngine->GetEngineTime();
+			const CPhysicsComponent *pPhys = GetHelicopter()->GetPhysComponent();
+			point_2d_t heli_pos = pPhys->Get2DPosition();
+			point_2d_t heli_vel = pPhys->GetVelocity();
+			point_2d_t heli_aabb = pPhys->GetAABBSize();
+			
+			CBullet *pBullet = new CBullet();
+			pBullet->SetPosition(heli_pos.m_x + heli_aabb.m_x, heli_pos.m_y + 40);
+			pBullet->SetXVelocity(heli_vel.m_x);
+			double y_vel = (heli_vel.m_y > 0) ? heli_vel.m_y + 90 : 90;
+			pBullet->SetYVelocity(y_vel);
+			m_pEngine->CreateEntity(pBullet);
+		}
+	}
 }

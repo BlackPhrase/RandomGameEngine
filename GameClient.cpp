@@ -64,12 +64,12 @@ bool CGameClient::KeyEvent( KeySym key, bool bPressed )
 			break;
 		case XK_KP_Add:
 			{
-				m_pEngine->SetFps(50);
+				m_pEngine->SetFps(120);
 			}
 			break;
 		case XK_KP_Subtract:
 			{
-				m_pEngine->SetFps(30);
+				m_pEngine->SetFps(60);
 			}
 			break;
 		default:
