@@ -218,6 +218,8 @@ public:
 	{
 		m_graphics.SetColour("red");
 		SetSize(5.0, 5.0);
+		
+		m_physics.SetYAccel(150.0);
 	}
 	
 	virtual const CPhysicsComponent *GetPhysComponent() const

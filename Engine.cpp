@@ -305,7 +305,8 @@ uint32_t CEngine::CreateEntity( CEntity *pEntToInsert )
 	}
 	else
 	{
-		sizzLog::LogError("invalid entity %", (uint32_t)pEntToInsert);
+		uint32_t addr = reinterpret_cast<uint32_t>(pEntToInsert);
+		sizzLog::LogError("invalid entity %", addr);
 		throw;
 		return 0xffff;
 	}

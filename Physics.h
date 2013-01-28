@@ -14,11 +14,20 @@ public:
 	{
 		m_position = {0.0, 0.0, 0.0};
 		m_velocity = {0.0, 0.0};
+		m_accel = {0.0, 0.0};
 		m_AABBsize = {0.0, 0.0};
 	}
 	
 	void Update( double dt )
 	{
+		if (m_accel.m_x > 0)
+		{
+			m_velocity.m_x += (m_accel.m_x * dt);
+		}
+		if (m_accel.m_y > 0)
+		{
+			m_velocity.m_y += (m_accel.m_y * dt);
+		}
 		m_position.m_x = m_position.m_x + (m_velocity.m_x * dt);
 		m_position.m_y = m_position.m_y + (m_velocity.m_y * dt);
 	}
@@ -40,6 +49,8 @@ public:
 		return m_velocity;
 	}
 	
+	void SetYAccel( double accel )	{ m_accel.m_y = accel; }
+	
 	void SetAABBSize( const point_2d_t &AABBsize ) { m_AABBsize = AABBsize; }
 	
 	point_2d_t GetAABBSize() const
@@ -51,6 +62,7 @@ private:
 	point_3d_t m_position;
 	// units/second
 	point_2d_t m_velocity;
+	point_2d_t m_accel;
 	point_2d_t m_AABBsize;
 };
 
