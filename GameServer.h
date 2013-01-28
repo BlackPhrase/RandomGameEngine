@@ -34,12 +34,18 @@ private:
 	void HandleCollision( CEntity *pEnt1, CEntity *pEnt2 );
 	
 	void CheckSpawnBuilding();
+	void CheckHeliFireBullet();
 	
 private:
 	IEngineServer *m_pEngine;
 	uint32_t m_entViewBounds;
 	uint32_t m_entHelicopter;
+	
+	double m_flLastBuildingWidth;
+	double m_flViewPosOnLastBuildingSpawn;
+	
 	bool m_bGameOver;
+	bool m_bViewMoving;
 };
 
 #endif // GAME_SERVER_H

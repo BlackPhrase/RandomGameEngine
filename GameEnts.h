@@ -47,11 +47,6 @@ public:
 		m_physics.Update(dt);
 	}
 	
-	virtual const CGraphicsComponent *GetGraphicsComponent() const
-	{
-		return &m_graphics;
-	}
-	
 	virtual const CPhysicsComponent *GetPhysComponent() const
 	{
 		return &m_physics;
@@ -88,7 +83,6 @@ public:
 	
 private:
 	CPhysicsComponent m_physics;
-	CGraphicsComponent m_graphics;
 	CEntInfo m_entInfo;
 };
 

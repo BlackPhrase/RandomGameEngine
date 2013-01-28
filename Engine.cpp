@@ -293,7 +293,7 @@ uint32_t CEngine::CreateEntity( CEntity *pEntToInsert )
 			CEntity *pEnt = m_entityList[i];
 			if (!pEnt)
 			{
-				pEnt = pEntToInsert;
+				m_entityList[i] = pEntToInsert;
 				++m_nEntities;
 				return i;
 			}
@@ -305,11 +305,13 @@ uint32_t CEngine::CreateEntity( CEntity *pEntToInsert )
 	}
 	else
 	{
+		sizzLog::LogError("invalid entity %", (uint32_t)pEntToInsert);
+		throw;
 		return 0xffff;
 	}
 }
 
-void CEngine::RemoveEntity( uint32_t index )
+bool CEngine::RemoveEntity( uint32_t index )
 {
 	CEntity *pEnt = m_entityList[index];
 	if (pEnt)
@@ -317,7 +319,9 @@ void CEngine::RemoveEntity( uint32_t index )
 		delete pEnt;
 		m_entityList[index] = NULL;
 		--m_nEntities;
+		return true;
 	}
+	return false;
 }
 
 CEntity *CEngine::GetEntity( uint32_t index )
@@ -331,6 +335,21 @@ CEntity *CEngine::GetEntity( uint32_t index )
 
 uint32_t CEngine::GetNumEntites() const
 {
+#ifndef NDEBUG
+	int count = 0;
+	for (int i = 0; i < m_entityList.size(); ++i)
+	{
+		if (m_entityList[i])
+		{
+			++count;
+		}
+	}
+	if (count != m_nEntities)
+	{
+		sizzLog::LogError("counted % entities, but tracked %", count, m_nEntities);
+		assert(false);
+	}
+#endif
 	return m_nEntities;
 }
 

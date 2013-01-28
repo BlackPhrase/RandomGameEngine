@@ -48,7 +48,14 @@ void CGraphicsEngine::ClearWindow()
 
 void CGraphicsEngine::BeginFrame()
 {
+	// double buffering clears the window automatically for us
 	//ClearWindow();
+	SetActiveColour(GetColour("lightblue"));
+	XFillRectangle(m_window.GetDisplay(), m_window.GetBackBuff(), m_graphicsContext,
+		0, 0, m_window.GetWindowWidth(), m_window.GetWindowHeight()*0.8);
+	SetActiveColour(GetColour("darkgrey"));
+	XFillRectangle(m_window.GetDisplay(), m_window.GetBackBuff(), m_graphicsContext,
+		0, m_window.GetWindowHeight()*0.95, m_window.GetWindowWidth(), m_window.GetWindowHeight()*0.05);
 }
 
 void CGraphicsEngine::EndFrame()
@@ -105,12 +112,23 @@ void CGraphicsEngine::RenderObject( const renderableContext_t &rC )
 				int32_t height = sizzUtil::RoundDBL(ceil(pRect->m_max.m_y - pRect->m_min.m_y));
 				XFillRectangle(m_window.GetDisplay(), m_window.GetBackBuff(), m_graphicsContext,
 					x, y, width, height);
+				SetActiveColour(GetColour("black"));
+				XDrawRectangle(m_window.GetDisplay(), m_window.GetBackBuff(), m_graphicsContext,
+					x, y, width, height);
 			}
 			break;
 		case k_eArc:
 			{
 				const arc_t *pArc = rC.gcomp.GetArc();
 				XFillArc(m_window.GetDisplay(), m_window.GetBackBuff(),
+					m_graphicsContext,
+					sizzUtil::RoundDBL(ceil(rC.position.m_x + pArc->m_originOffset.m_x)),
+					sizzUtil::RoundDBL(ceil(rC.position.m_y + pArc->m_originOffset.m_y)),
+					sizzUtil::RoundDBL(ceil(pArc->m_size.m_x)),
+					sizzUtil::RoundDBL(ceil(pArc->m_size.m_y)),
+					0, 360*64);
+				SetActiveColour(GetColour("black"));
+				XDrawArc(m_window.GetDisplay(), m_window.GetBackBuff(),
 					m_graphicsContext,
 					sizzUtil::RoundDBL(ceil(rC.position.m_x + pArc->m_originOffset.m_x)),
 					sizzUtil::RoundDBL(ceil(rC.position.m_y + pArc->m_originOffset.m_y)),

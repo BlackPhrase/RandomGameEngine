@@ -9,7 +9,10 @@ CGameServer::CGameServer():
 	m_pEngine(NULL),
 	m_entViewBounds(0),
 	m_entHelicopter(0),
-	m_bGameOver(false)
+	m_flLastBuildingWidth(0.0),
+	m_flViewPosOnLastBuildingSpawn(0.0),
+	m_bGameOver(false),
+	m_bViewMoving(false)
 {
 }
 
@@ -33,14 +36,8 @@ void CGameServer::GameStart()
 	m_bGameOver = false;
 	C2DViewBounds *pView = GetViewBoundsEnt();
 	// set view position here too...
-	pView->SetHorizontalScrollSpeed(50.0);
-	
-	CBuilding *pBuilding = new CBuilding();
-	m_pEngine->CreateEntity(pBuilding);
-	pBuilding->SetPosition(400.0, 100.0);
-	pBuilding->SetXVelocity(0.0);
-	pBuilding->SetYVelocity(0.0);
-	pBuilding->SetSize(32.0, pView->GetFov().m_y);
+	pView->SetHorizontalScrollSpeed(200.0);
+	m_bViewMoving = true;
 	
 	CHelicopter *pHelicopter = new CHelicopter();
 	m_entHelicopter = m_pEngine->CreateEntity(pHelicopter);
@@ -59,26 +56,38 @@ void CGameServer::GameEnd()
 // called each frame by the engine
 void CGameServer::GameFrame( double dt )
 {
-	uint32_t num = m_pEngine->GetNumEntites();
 	std::vector<CEntity*> m_ents;
-	m_ents.reserve(num);
-	int i = 0;
-	while (num)
 	{
-		CEntity *pEnt = m_pEngine->GetEntity(i++);
-		if (pEnt)
+		m_ents.reserve(m_pEngine->GetNumEntites());
+		int i = 0;
+		for (int ents_processed = 0; ents_processed < m_pEngine->GetNumEntites();)
 		{
-			if (pEnt->IsMarkedForRemoval())
+			sizzLog::LogDebug("% ents processed, % total", ents_processed, m_pEngine->GetNumEntites());
+			CEntity *pEnt = m_pEngine->GetEntity(i++);
+			if (pEnt)
 			{
-				int index = m_pEngine->IndexOfEnt(pEnt);
-				m_pEngine->RemoveEntity(index);
+				if (pEnt->IsMarkedForRemoval())
+				{
+					int index = m_pEngine->IndexOfEnt(pEnt);
+					m_pEngine->RemoveEntity(index);
+				}
+				else
+				{
+					// remove viewable entities not in the view
+					if (pEnt->GetGraphicsComponent() && !IsInViewBounds(pEnt))
+					{
+						pEnt->MarkForRemoval();
+					}
+					else
+					{
+						pEnt->Update(dt);
+						m_ents.emplace_back(pEnt);
+					}
+				}
+				++ents_processed;
 			}
-			else
-			{
-				pEnt->Update(dt);
-				m_ents.emplace_back(pEnt);
-			}
-			--num;
+			if (i > 100)
+				break;
 		}
 	}
 	
@@ -109,14 +118,21 @@ void CGameServer::GameFrame( double dt )
 		view_pos_max.m_x += view_pos.m_x;
 		view_pos_max.m_y += view_pos.m_y;
 		if (pos.m_x < view_pos.m_x)
+		{
 			pos.m_x = view_pos.m_x;
+		}
 		if (pos.m_y < view_pos.m_y)
+		{
 			pos.m_y = view_pos.m_y;
+		}
 		if (pos.m_x + heli_size.m_x > view_pos_max.m_x)
+		{
 			pos.m_x = view_pos_max.m_x - heli_size.m_x;
+		}
 		if (pos.m_y + heli_size.m_y > view_pos_max.m_y)
+		{		
 			pos.m_y = view_pos_max.m_y - heli_size.m_y;
-		
+		}
 		GetHelicopter()->SetPosition(pos.m_x, pos.m_y);
 	}
 	
@@ -213,7 +229,7 @@ void CGameServer::HandleCollision( CEntity *pEnt1, CEntity *pEnt2 )
 {
 	const CEntInfo *pInfo1 = pEnt1->GetInfo();
 	const CEntInfo *pInfo2 = pEnt2->GetInfo();
-	
+	rand() % 30 + 1985;
 	EObjectType obj1 = pInfo1->GetObjType();
 	EObjectType obj2 = pInfo2->GetObjType();
 	
@@ -289,5 +305,39 @@ void CGameServer::HandleCollision( CEntity *pEnt1, CEntity *pEnt2 )
 
 void CGameServer::CheckSpawnBuilding()
 {
-	
+	if (m_bViewMoving)
+	{
+		// these are in the x domain
+		C2DViewBounds *pView = GetViewBoundsEnt();
+		const CPhysicsComponent *pViewPhys = pView->GetPhysComponent();
+		double cur_view_pos = pViewPhys->Get2DPosition().m_x;
+		
+		static int32_t rand_distance = sizzUtil::Rand_Bounded(0.0, 50.0);
+		if ((m_flViewPosOnLastBuildingSpawn + m_flLastBuildingWidth + rand_distance) <= cur_view_pos)
+		{
+			rand_distance = sizzUtil::Rand_Bounded(0.0, 50.0);
+			m_flLastBuildingWidth = 32.0;
+			m_flViewPosOnLastBuildingSpawn = cur_view_pos;
+			
+			CBuilding *pBuilding = new CBuilding();
+			m_pEngine->CreateEntity(pBuilding);
+			int32_t height = sizzUtil::Rand_Bounded(130.0, 430.0);
+			int32_t building_pos = cur_view_pos + pViewPhys->GetAABBSize().m_x;
+			
+			pBuilding->SetPosition(building_pos, height);
+			pBuilding->SetXVelocity(0.0);
+			pBuilding->SetYVelocity(0.0);
+			pBuilding->SetSize(m_flLastBuildingWidth, pView->GetFov().m_y);
+		}
+	}
+}
+
+void CGameServer::CheckHeliFireBullet()
+{/*
+	double cur_time = m_pEngine->GetEngineTime();
+	if (m_flLastFireBullet + 0.5 <= cur_time)
+	{
+		
+		m_pEngine->CreateEntity(pBullet);
+	}*/
 }

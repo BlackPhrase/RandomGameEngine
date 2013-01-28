@@ -6,6 +6,7 @@
 #include <sys/time.h>
 #include <stdexcept>
 #include <sstream>
+#include <cstdlib>
 
 namespace sizzUtil
 {
@@ -18,6 +19,8 @@ namespace sizzUtil
 	template<typename T, typename... Args>
 	void ssprintf(std::stringstream &ss, const char* s, const T &value, Args... args);
 	void ssprintf(std::stringstream &ss, const char* s);
+	
+	int32_t Rand_Bounded( int32_t lower, int32_t upper );
 }
 
 inline int64_t sizzUtil::RoundDBL( double num )
@@ -72,6 +75,11 @@ inline void sizzUtil::ssprintf(std::stringstream &ss, const char* s)
 			throw std::runtime_error("invalid format string: missing arguments");
 		ss << *s++;
 	}
+}
+
+inline int32_t sizzUtil::Rand_Bounded( int32_t lower, int32_t upper )
+{
+	return (rand() % (upper - lower)) + lower;
 }
 
 #endif // UTILS_H

@@ -14,7 +14,7 @@ class IEngineServer
 {
 public:
 	virtual uint32_t	CreateEntity( CEntity *pEntToInsert ) = 0;
-	virtual void		RemoveEntity( uint32_t index ) = 0;
+	virtual bool		RemoveEntity( uint32_t index ) = 0;
 	virtual CEntity		*GetEntity( uint32_t index ) = 0;
 	virtual uint32_t	GetNumEntites() const = 0;
 	virtual uint32_t	IndexOfEnt( const CEntity *pEnt ) const = 0;

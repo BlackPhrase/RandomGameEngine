@@ -65,7 +65,7 @@ public:
 	// ====================
 public:
 	virtual uint32_t	CreateEntity( CEntity *pEntToInsert );
-	virtual void		RemoveEntity( uint32_t index );
+	virtual bool		RemoveEntity( uint32_t index );
 	virtual CEntity		*GetEntity( uint32_t index );
 	virtual uint32_t	GetNumEntites() const;
 	virtual uint32_t	IndexOfEnt( const CEntity *pEnt ) const;
