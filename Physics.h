@@ -20,14 +20,9 @@ public:
 	
 	void Update( double dt )
 	{
-		if (m_accel.m_x > 0)
-		{
-			m_velocity.m_x += (m_accel.m_x * dt);
-		}
-		if (m_accel.m_y > 0)
-		{
-			m_velocity.m_y += (m_accel.m_y * dt);
-		}
+		m_velocity.m_x += (m_accel.m_x * dt);
+		m_velocity.m_y += (m_accel.m_y * dt);
+		
 		m_position.m_x = m_position.m_x + (m_velocity.m_x * dt);
 		m_position.m_y = m_position.m_y + (m_velocity.m_y * dt);
 	}

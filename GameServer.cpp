@@ -64,6 +64,7 @@ void CGameServer::GameFrame( double dt )
 		int i = 0;
 		for (int ents_processed = 0; ents_processed < m_pEngine->GetNumEntites();)
 		{
+			//sizzLog::LogDebug("num ents: %, ents_processed %, i %", m_pEngine->GetNumEntites(), ents_processed, i);
 			CEntity *pEnt = m_pEngine->GetEntity(i++);
 			if (pEnt)
 			{
@@ -91,8 +92,12 @@ void CGameServer::GameFrame( double dt )
 				}
 				++ents_processed;
 			}
+#ifndef NDEBUG
 			if (i > 100)
-				break;
+			{
+				assert(false);
+			}
+#endif
 		}
 	}
 	
@@ -112,6 +117,8 @@ void CGameServer::GameFrame( double dt )
 			}
 		}
 	}
+	
+	CreateQueuedEnts();
 	
 	// this makes sure the heli doesn't go out of bounds
 	if (!m_bGameOver)
@@ -228,13 +235,22 @@ void CGameServer::SpawnBullet( CBullet *pBullet )
 {
 	if (pBullet)
 	{
-		m_pEngine->CreateEntity(pBullet);
+		m_entCreateQueue.emplace_back(pBullet);
 	}
 }
 
 double CGameServer::EngineTime()
 {
 	return m_pEngine->GetEngineTime();
+}
+
+void CGameServer::CreateQueuedEnts()
+{
+	for ( CEntity *pEnt : m_entCreateQueue )
+	{
+		m_pEngine->CreateEntity(pEnt);
+	}
+	m_entCreateQueue.clear();
 }
 
 C2DViewBounds *CGameServer::GetViewBoundsEnt()

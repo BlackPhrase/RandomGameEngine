@@ -4,6 +4,7 @@
 
 #include "IEngineServer.h"
 #include "BulletSpawner.h"
+#include <vector>
 
 class C2DViewBounds;
 class CHelicopter;
@@ -33,6 +34,9 @@ private:
 	virtual double EngineTime();
 	
 private:
+	void CreateQueuedEnts();
+	
+private:
 	C2DViewBounds *GetViewBoundsEnt();
 	CHelicopter *GetHelicopter();
 	
@@ -49,6 +53,8 @@ private:
 	uint32_t m_entViewBounds;
 	uint32_t m_entHelicopter;
 	
+	std::vector<CEntity*> m_entCreateQueue;
+	
 	double m_flLastBuildingWidth;
 	double m_flViewPosOnLastBuildingSpawn;
 	double m_flLastFireBullet;
@@ -56,6 +62,7 @@ private:
 	bool m_bGameOver;
 	bool m_bViewMoving;
 	bool m_bFiringBullets;
+	
 };
 
 #endif // GAME_SERVER_H
