@@ -30,6 +30,10 @@ debug :
 
 clean :
 	rm -rf ${DEPENDS} ${OBJECTS} ${EXEC}
+	
+run :
+	$(MAKE)
+	./${EXEC}
 
 -include ${DEPENDS}	# reads the .d files and reruns dependencies
 
